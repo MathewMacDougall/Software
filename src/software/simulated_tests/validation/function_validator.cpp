@@ -4,28 +4,41 @@
 
 FunctionValidator::FunctionValidator(ValidationFunction validation_function,
                                      std::shared_ptr<World> world)
-    :  // We need to provide the world and validation_function in the coroutine function
-       // binding so that the wrapper function has access to the correct variable context,
-       // otherwise the World inside the coroutine will not update properly when the
-       // pointer is updated, and the wrong validation_function may be run.
-      validation_sequence(
-          boost::bind(&FunctionValidator::executeAndCheckForSuccessWrapper, this, _1,
-                      world, validation_function))
+        :  validation_function_(validation_function),
+           world_(world),
+
+        // We need to provide the world and validation_function in the coroutine function
+        // binding so that the wrapper function has access to the correct variable context,
+        // otherwise the World inside the coroutine will not update properly when the
+        // pointer is updated, and the wrong validation_function may be run.
+           validation_sequence(
+//          boost::bind(&FunctionValidator::executeAndCheckForSuccessWrapper, this, _1,
+//                      world, validation_function))
+                   boost::bind(&FunctionValidator::executeAndCheckForSuccessWrapper, this, _1))
 {
+    std::cout << "FunctionValidator created with " << world_ << std::endl;
 }
 
+//void FunctionValidator::executeAndCheckForSuccessWrapper(
+//    ValidationCoroutine::push_type &yield, std::shared_ptr<World> world,
+//    ValidationFunction validation_function)
 void FunctionValidator::executeAndCheckForSuccessWrapper(
-    ValidationCoroutine::push_type &yield, std::shared_ptr<World> world,
-    ValidationFunction validation_function)
+        ValidationCoroutine::push_type &yield)
 {
+    std::cout << "wrapper called with " << world_ << std::endl;
     // Yield the very first time the function is called, so that the validation_function
     // is not run until this coroutine / wrapper function is called again by
     // executeAndCheckForSuccess
     yield();
 
+    std::cout << "wrapper after yield called with " << world_ << std::endl;
+
+    assert(world_);
+    assert(validation_function_);
+
     // Anytime after the first function call, the validation_function will be
     // used to perform the real logic.
-    validation_function(world, yield);
+    validation_function_(world_, yield);
 }
 
 bool FunctionValidator::executeAndCheckForSuccess()

@@ -28,33 +28,62 @@ bool WorldStateValidator::waitForValidationToPass(
     // The pointer to the world that will be shared with all the function validators
     std::shared_ptr<World> world_ptr = std::make_shared<World>(world.value());
 
+    FunctionValidator myfv = FunctionValidator(validation_functions[0], world_ptr);
     std::vector<FunctionValidator> function_validators;
+    function_validators.reserve(2);
     for (ValidationFunction validation_function : validation_functions)
     {
-        function_validators.emplace_back(
-            FunctionValidator(validation_function, world_ptr));
+        FunctionValidator fvv = FunctionValidator(validation_function, world_ptr);
+//          DOES MEMORY GET MOVED BEFORE OR AFTER THE INITIALIZATION LIST?
+//        function_validators.emplace_back(
+//            FunctionValidator(validation_function, world_ptr));
+        function_validators.emplace_back(std::move(fvv));
     }
 
-    std::vector<ContinuousFunctionValidator> continuous_function_validators;
-    for (const auto &continuous_validation_function : continuous_validation_functions)
-    {
-        continuous_function_validators.emplace_back(
-            ContinuousFunctionValidator(continuous_validation_function, world_ptr));
-    }
+//    std::vector<std::shared_ptr<FunctionValidator>> function_validators;
+//    for (ValidationFunction validation_function : validation_functions)
+//    {
+//        auto fv = std::make_shared<FunctionValidator>(validation_function, world_ptr);
+//        function_validators.emplace_back(fv);
+//    }
+
+//    std::vector<ContinuousFunctionValidator> continuous_function_validators;
+//    for (const auto &continuous_validation_function : continuous_validation_functions)
+//    {
+//        continuous_function_validators.emplace_back(
+//            ContinuousFunctionValidator(continuous_validation_function, world_ptr));
+//    }
 
     bool validation_successful   = false;
     Timestamp starting_timestamp = world_ptr->getMostRecentTimestamp();
     Timestamp timeout_timestamp  = starting_timestamp + timeout;
     while (world_ptr->getMostRecentTimestamp() < timeout_timestamp)
     {
-        for (auto &continuous_function_validator : continuous_function_validators)
-        {
-            continuous_function_validator.executeAndCheckForFailures();
-        }
+        std::cout << world_ptr << std::endl;
+//        for (auto &continuous_function_validator : continuous_function_validators)
+//        {
+//            continuous_function_validator.executeAndCheckForFailures();
+//        }
 
-        validation_successful = std::all_of(
-            function_validators.begin(), function_validators.end(),
-            [](FunctionValidator &fv) { return fv.executeAndCheckForSuccess(); });
+//        function_validators.at(0)->executeAndCheckForSuccess();
+//        function_validators.at(0).executeAndCheckForSuccess();
+//        for(auto& fv : function_validators) {
+//            validation_successful = fv.executeAndCheckForSuccess();
+//            if(!validation_successful) {
+//                break;
+//            }
+//        }
+
+        FunctionValidator& fv = function_validators.front();
+        validation_successful = fv.executeAndCheckForSuccess();
+
+//        validation_successful = myfv.executeAndCheckForSuccess();
+//        validation_successful = std::all_of(
+//            function_validators.begin(), function_validators.end(),
+//            [](std::shared_ptr<FunctionValidator> &fv) { return fv->executeAndCheckForSuccess(); });
+//        validation_successful = std::all_of(
+//                function_validators.begin(), function_validators.end(),
+//                [](FunctionValidator &fv) { return fv.executeAndCheckForSuccess(); });
 
         // After we have validated the world state, send it to other Observers
         Subject<World>::sendValueToObservers(*world_ptr);

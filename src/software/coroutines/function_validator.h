@@ -1,6 +1,6 @@
 #pragma once
 
-#include "software/simulated_tests/validation/validation_function.h"
+#include "software/coroutines/validation_function.h"
 
 /**
  * This class is a wrapper to make it easier to work with ValidationFunctions. It provides
@@ -12,7 +12,7 @@
  */
 class FunctionValidator
 {
-public:
+   public:
     /**
      * Creates a new FunctionValidator.
      *
@@ -36,7 +36,7 @@ public:
      */
     bool executeAndCheckForSuccess();
 
-private:
+   private:
     /**
      * A wrapper function for the validation_function.
      *
@@ -53,13 +53,13 @@ private:
      * inside the validation_function.
      * @param validation_function The validation_function to run in the coroutine
      */
-//    void executeAndCheckForSuccessWrapper(ValidationCoroutine::push_type& yield,
-//                                          std::shared_ptr<World> world,
-//                                          ValidationFunction validation_function);
     void executeAndCheckForSuccessWrapper(ValidationCoroutine::push_type& yield);
 
     // The coroutine that will be given to the validation function
     ValidationCoroutine::pull_type validation_sequence;
     std::shared_ptr<World> world_;
     ValidationFunction validation_function_;
+    FunctionValidator* this_ptr_1;
+    FunctionValidator* this_ptr_2;
+
 };
