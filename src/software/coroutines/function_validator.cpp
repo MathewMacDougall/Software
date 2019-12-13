@@ -40,9 +40,12 @@ bool FunctionValidator::executeAndCheckForSuccess()
     // Check the coroutine status to see if it has any more work to do.
     if (validation_sequence)
     {
+        std::cout << "running coroutine" << std::endl;
         // Run the coroutine. This will call the bound executeAndCheckForSuccessWrapper
         // function
         validation_sequence();
+    }else {
+        std::cout << "did not run coroutine" << std::endl;
     }
 
     // The validation_function is done if the coroutine evaluates to false, which means
