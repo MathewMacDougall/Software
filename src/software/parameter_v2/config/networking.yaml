@@ -1,0 +1,25 @@
+--- # Metadata for this config
+metadata:
+  shared: false
+  name: Networking
+--- # Params
+SSLVisionMulticastAddress:
+  type: std::string
+  value: 224.5.23.2
+  description: >
+    The multicast address used to listen for vision data
+SSLVisionListenPort:
+  type: uint16_t
+  value: 10020
+  description: >
+    The port used to listen for vision data
+SSLGamecontrollerMulticastAddress:
+  type: std::string
+  value: 224.5.23.1
+  description: >
+    The multicast address used to listen for Gamecontroller data
+SSLGamecontrollerListenPort:
+  type: uint16_t
+  value: 10003
+  description: >
+    The port used to listen for Gamecontroller data

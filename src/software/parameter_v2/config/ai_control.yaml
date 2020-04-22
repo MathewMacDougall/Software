@@ -1,0 +1,36 @@
+--- # Metadata for this config
+metadata:
+  shared: false
+  name: AIControl
+--- # Params
+RunAI:
+  type: bool
+  value: true
+  description: >
+    The multicast address used to listen for vision data
+PlayOverride:
+  type:
+  value: None
+  # How to do values / factory stuff
+  description: >
+    The port used to listen for vision data
+DefendingSideOverride:
+  type: std::string
+  value: 224.5.23.1
+  description: >
+    The multicast address used to listen for Gamecontroller data
+FriendlyColourOverride:
+  type: uint16_t
+  value: 10003
+  description: >
+    The port used to listen for Gamecontroller data
+FriendlyGoalieIDOverride:
+  type: uint16_t
+  value: 10003
+  description: >
+    The port used to listen for Gamecontroller data
+EnemyGoalieIDOverride:
+  type: uint16_t
+  value: 10003
+  description: >
+    The port used to listen for Gamecontroller data
