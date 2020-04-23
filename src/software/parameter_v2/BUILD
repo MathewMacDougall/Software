@@ -31,4 +31,7 @@ foo_binary(
     enum_srcs = [
         ":test_enum.h",
     ],
+    enum_targets = [
+        ":test_enum",
+    ],
 )

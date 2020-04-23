@@ -5,24 +5,29 @@ def _foo_binary_impl(ctx):
     generated_header_file = Label("//software/parameter_v2/config.hpp")
     generated_source_file = Label("//software/parameter_v2/config.cpp")
 
+    target = ctx.attr.enum_targets[0]
+    print("\n\ntarget: {}\n\n".format(target[CcInfo].compilation_context.headers))
+
     args = ctx.actions.args()
     args.add("--output_header_file", generated_header_file)
     args.add("--output_source_file", generated_source_file)
     args.add_all("--include_headers", enum_header_paths)
-    ctx.actions.run(
-        outputs = [
-            generated_source_file,
-            #            ctx.attr._generated_header_file,
-            #            ctx.attr._generated_source_file,
-        ],
-        arguments = [args],
-        executable = ctx.attr._generation_script,
-    )
+
+#    ctx.actions.run(
+#        outputs = [
+#            generated_source_file,
+#            #            ctx.attr._generated_header_file,
+#            #            ctx.attr._generated_source_file,
+#        ],
+#        arguments = [args],
+#        executable = ctx.attr._generation_script,
+#    )
 
 foo_binary = rule(
     implementation = _foo_binary_impl,
     attrs = {
         "enum_srcs": attr.label_list(allow_files = [".h", ".hpp"]),
+        "enum_targets": attr.label_list(),
         "_generation_script": attr.label(
             default = Label("//software/parameter_v2/scripts:dynamic_param_v2_test"),
             executable = True,
