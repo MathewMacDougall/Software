@@ -3,7 +3,7 @@
 import yaml
 import os
 from pathlib import Path
-import sys
+import argparse
 
 # Path relative to the bazel WORKSPACE root
 # This path is included in the data for the py_binary
@@ -36,6 +36,14 @@ def validate_yaml_schema(loaded_yaml_generator):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Generate DynamicParameters')
+    parser.add_argument('--output_header_file', type=str, required=True)
+    parser.add_argument('--output_source_file', type=str, required=True)
+    parser.add_argument('--include_headers', type=list, required=True)
+
+    args = parser.parse_args()
+    print("\n\nargs: {}\n\n".format(args))
+
 
     print("I'm RUNNING")
     for root, dirs, files in os.walk(PARAMETER_CONFIG_PATH, topdown=True):

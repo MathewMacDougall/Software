@@ -8,6 +8,7 @@ py_binary(
         "//software/parameter_v2:parameter_configs",
     ],
     main = "main.py",
+    visibility = ["//software/parameter_v2:__subpackages__"],
     deps = [
         requirement("PyYAML"),
     ],
