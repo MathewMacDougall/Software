@@ -190,7 +190,7 @@ load("@rules_python//python:pip.bzl", "pip3_import")
 
 pip3_import(
     name = "dynamic_parameter_deps",
-    requirements = "//software/parameter_v2/scripts:requirements.txt",
+    requirements = "//shared/parameter_v2/scripts:requirements.txt",
 )
 
 load("@dynamic_parameter_deps//:requirements.bzl", "pip_install")

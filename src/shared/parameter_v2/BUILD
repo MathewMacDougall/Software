@@ -3,7 +3,7 @@ filegroup(
     srcs = glob([
         "config/**/*.yaml",
     ]),
-    visibility = ["//software/parameter_v2:__subpackages__"],
+    visibility = ["//shared/parameter_v2:__subpackages__"],
 )
 
 cc_binary(
@@ -22,16 +22,21 @@ cc_library(
     deps = [],
 )
 
+cc_library(
+    name = "test_enum_dep",
+    srcs = [],
+    hdrs = [":test_enum_dep.h"],
+    deps = [],
+)
+
 exports_files(["test_enum.h"])
 
-load(":foo.bzl", "foo_binary")
+load(":parameter.bzl", "generate_dynamic_parameters")
 
-foo_binary(
-    name = "bin",
-    enum_srcs = [
-        ":test_enum.h",
-    ],
+generate_dynamic_parameters(
+    name = "dynamic_params",
     enum_targets = [
         ":test_enum",
     ],
+    generated_config_file = "myconfiguration.hpp",
 )
