@@ -2,12 +2,12 @@ import yaml
 import os
 from pathlib import Path
 import argparse
-from rules_python.python.runfiles import runfiles
+# from rules_python.python.runfiles import runfiles
 
 # Path relative to the bazel WORKSPACE root
 # This path is included in the data for the py_binary
-PARAMETER_CONFIG_PATH = Path("./shared/parameter_v2/config")
-PARAMETER_CONFIG_PATH = Path(".")
+# PARAMETER_CONFIG_PATH = Path("./shared/parameter_v2/config")
+PARAMETER_CONFIG_PATH = Path(os.path.dirname(__file__), "../config")
 #
 def validate_yaml_metadata_schema(document):
     pass
@@ -42,10 +42,23 @@ def main(generated_config_file, include_headers, generate_for_cpp):
     #     print("{} - {}".format(root, files))
     # r = runfiles.Create()
     # print("r: {}".format(r))
+    # s = r._strategy
+    # print("strategy: {}".format(s))
+    # rf = s._runfiles
+    # print("runfiles: {}".format(rf))
     # assert(r)
     # foo = r.Rlocation("shared")
     # print(foo)
-    print(os.getenv("RUNFILES_DIR"))
+    # print(os.getenv("RUNFILES_DIR"))
+    yamls = list(PARAMETER_CONFIG_PATH.glob('**/*.yaml'))
+    print(PARAMETER_CONFIG_PATH)
+    print(yamls)
+
+    for filename in yamls:
+        with open(filename, 'r') as stream:
+            all_data = yaml.load_all(stream)
+            for data in all_data:
+                print(data)
 
 
     # print("in main: {}".format(PARAMETER_CONFIG_PATH))
