@@ -1,23 +1,23 @@
 def _generate_dynamic_parameters_impl(ctx):
-    output_file = ctx.outputs.generated_config_file
+    output_file = ctx.outputs.generated_parameter_file
 
     args = ctx.actions.args()
-    args.add("--generated_config_file", output_file)
+    args.add("--output_file", output_file)
 
     if output_file.extension == "hpp":
-        print("configured for an hpp file")
         args.add("-cpp")
     elif output_file.extension == "h":
-        print("confugured for an h file")
         args.add("-c")
     else:
         fail(
-            msg = "Invalid generated_config_file extension. Expected 'h' or 'hpp'",
-            attr = ctx.attr.generated_config_file.name,
+            msg = "Invalid file extension. Expected 'h' or 'hpp'",
+            attr = output_file.name,
         )
 
+    # TODO: You are here: Figure out how to only get direct headers
     enum_headers = [f for target in ctx.attr.enum_targets for f in target[CcInfo].compilation_context.headers.to_list()]
     enum_header_paths = [f.path for f in enum_headers]
+    print("\n\nenum header paths\n{}\n\n".format(enum_header_paths))
     args.add_all("--include_headers", enum_headers)
 
     ctx.actions.run(
@@ -34,11 +34,10 @@ generate_dynamic_parameters = rule(
     attrs = {
         "enum_targets": attr.label_list(),
         "_generation_script": attr.label(
-            default = Label("//shared/parameter_v2/scripts:dynamic_param_v2_test"),
+            default = Label("//shared/parameter_v2/scripts:generate_dynamic_parameters"),
             executable = True,
             cfg = "host",
-            allow_files = True,
         ),
-        "generated_config_file": attr.output(mandatory = True),
+        "generated_parameter_file": attr.output(mandatory = True),
     },
 )
