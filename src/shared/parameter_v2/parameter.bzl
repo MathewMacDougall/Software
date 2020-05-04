@@ -14,10 +14,10 @@ def _generate_dynamic_parameters_impl(ctx):
             attr = output_file.name,
         )
 
-    # TODO: You are here: Figure out how to only get direct headers
-    enum_headers = [f for target in ctx.attr.enum_targets for f in target[CcInfo].compilation_context.headers.to_list()]
+    # Retrieve paths to the header files directly listed in each enum_target
+    # These paths are relative to the bazel WORKSPACE root
+    enum_headers = [f for target in ctx.attr.enum_targets for f in target[CcInfo].compilation_context.direct_headers]
     enum_header_paths = [f.path for f in enum_headers]
-    print("\n\nenum header paths\n{}\n\n".format(enum_header_paths))
     args.add_all("--include_headers", enum_headers)
 
     ctx.actions.run(
