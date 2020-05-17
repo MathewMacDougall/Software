@@ -1,4 +1,5 @@
 #include "software/new_geom/vector.h"
+#include "software/new_geom/geom_constants
 
 #include "software/new_geom/angle.h"
 

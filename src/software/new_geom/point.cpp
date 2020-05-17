@@ -1,4 +1,5 @@
 #include "software/new_geom/point.h"
+#include "software/new_geom/geom_constants.h"
 
 Point::Point() : x_(0.0), y_(0.0) {}
 

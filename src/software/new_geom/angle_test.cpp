@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 
 #include <limits>
+#include <cmath>
 
 TEST(AngleTest, Statics)
 {

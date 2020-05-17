@@ -1,4 +1,5 @@
 #include "software/new_geom/circle.h"
+#include "software/new_geom/geom_constants.h"
 
 Circle::Circle() : origin_(Point()), radius_(0) {}
 

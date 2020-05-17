@@ -2,6 +2,7 @@ package(default_visibility = ["//visibility:public"])
 
 cc_library(
     name = "angle",
+    srcs = ["angle.cpp"],
     hdrs = ["angle.h"],
     deps = [":geom_constants"],
 )
@@ -60,6 +61,7 @@ cc_library(
     hdrs = ["circle.h"],
     deps = [
         ":convex_shape",
+        ":geom_constants",
         ":point",
     ],
 )
