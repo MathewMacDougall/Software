@@ -102,6 +102,7 @@ class NetworkClient
     // The most up-to-date state of the world components
     std::optional<Field> field;
     std::optional<Ball> ball;
+    std::optional<RefboxGameState> refbox_game_state;
     Team friendly_team;
     Team enemy_team;
 
@@ -114,7 +115,9 @@ class NetworkClient
     int initial_packet_count;
 
     // The callback function that we pass newly received/filtered worlds to
+    // TODO: put this in a function, no need to have a raw mutex here
     std::function<void(World)> received_world_callback;
+    std::mutex received_world_callback_mutex;
 
     std::shared_ptr<const SensorFusionConfig> sensor_fusion_config;
 };

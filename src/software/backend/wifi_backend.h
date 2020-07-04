@@ -50,7 +50,7 @@ class WifiBackend : public Backend
     NetworkClient network_input;
 
     // Client to listen for SSL protobufs
-    SSLProtoClient ssl_proto_client;
+//    SSLProtoClient ssl_proto_client;
 
     // ProtoMulticast** to communicate with robots
     std::unique_ptr<ThreadedProtoMulticastSender<VisionMsg>> vision_output;

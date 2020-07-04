@@ -52,10 +52,10 @@ void STP::updateCurrentPlay(const World& world)
             catch (std::invalid_argument)
             {
                 auto default_play = default_play_constructor();
-                LOG(WARNING) << "Error: The Play \"" << override_play_name
-                             << "\" specified in the override is not valid." << std::endl;
-                LOG(WARNING) << "Falling back to the default Play - "
-                             << default_play->getName() << std::endl;
+//                LOG(WARNING) << "Error: The Play \"" << override_play_name
+//                             << "\" specified in the override is not valid." << std::endl;
+//                LOG(WARNING) << "Falling back to the default Play - "
+//                             << default_play->getName() << std::endl;
                 current_play = std::move(default_play);
             }
         }
@@ -71,10 +71,10 @@ void STP::updateCurrentPlay(const World& world)
             catch (const std::runtime_error& e)
             {
                 auto default_play = default_play_constructor();
-                LOG(WARNING) << "Unable to assign a new Play. No Plays are valid"
-                             << std::endl;
-                LOG(WARNING) << "Falling back to the default Play - "
-                             << default_play->getName() << std::endl;
+//                LOG(WARNING) << "Unable to assign a new Play. No Plays are valid"
+//                             << std::endl;
+//                LOG(WARNING) << "Falling back to the default Play - "
+//                             << default_play->getName() << std::endl;
                 current_play = std::move(default_play);
             }
         }
@@ -123,8 +123,8 @@ std::vector<std::unique_ptr<Intent>> STP::getIntentsFromCurrentPlay(const World&
             }
             else
             {
-                LOG(WARNING) << "Tried to run a tactic that didn't yield an Intent"
-                             << "and did not have a robot assigned!";
+//                LOG(WARNING) << "Tried to run a tactic that didn't yield an Intent"
+//                             << "and did not have a robot assigned!";
             }
         }
     }

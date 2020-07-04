@@ -3,6 +3,7 @@
 #include "boost/circular_buffer.hpp"
 #include "software/parameter/dynamic_parameters.h"
 
+// TODO: we dont' use refbox stage anywhere, remove it
 World::World(const Field &field, const Ball &ball, const Team &friendly_team,
              const Team &enemy_team, unsigned int buffer_size)
     : field_(field),
@@ -16,6 +17,9 @@ World::World(const Field &field, const Ball &ball, const Team &friendly_team,
     // Grab the most recent timestamp from all of the members used to update the world
     last_update_timestamps.set_capacity(buffer_size);
     updateTimestamp(getMostRecentTimestampFromMembers());
+
+    // TODO: Hack, fix properly
+    updateBallStateWithTimestamp(ball.currentState());
 }
 
 void World::updateBallStateWithTimestamp(const TimestampedBallState &new_ball_state)

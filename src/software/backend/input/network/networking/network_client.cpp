@@ -26,7 +26,7 @@ NetworkClient::NetworkClient(
     ssl_gamecontroller_client =
         std::make_unique<ThreadedProtoMulticastListener<SSL_Referee>>(
             gamecontroller_multicast_address, gamecontroller_multicast_port,
-            boost::bind(&NetworkClient::filterAndPublishGameControllerData, this, _1));
+                       boost::bind(&NetworkClient::filterAndPublishGameControllerData, this, _1));
 }
 
 void NetworkClient::filterAndPublishVisionDataWrapper(SSL_WrapperPacket packet)
@@ -63,6 +63,9 @@ void NetworkClient::filterAndPublishVisionDataWrapper(SSL_WrapperPacket packet)
 
 void NetworkClient::filterAndPublishVisionData(SSL_WrapperPacket packet)
 {
+    // TODO: comment here
+    std::scoped_lock lock(received_world_callback_mutex);
+
     if (packet.has_geometry())
     {
         const auto& latest_geometry_data = packet.geometry();
@@ -109,17 +112,24 @@ void NetworkClient::filterAndPublishVisionData(SSL_WrapperPacket packet)
     }
     if (field && ball)
     {
-        received_world_callback(World(*field, *ball, friendly_team, enemy_team));
+        World world(*field, *ball, friendly_team, enemy_team);
+        if (refbox_game_state){
+            world.updateGameState(*refbox_game_state);
+        }
+        received_world_callback(world);
     }
 }
 
 void NetworkClient::filterAndPublishGameControllerData(SSL_Referee packet)
 {
-    if (field && ball)
+    // TODO: comment here
+    std::scoped_lock lock(received_world_callback_mutex);
+
+    if (field && ball && packet.command() != 3)
     {
-        RefboxGameState game_state = network_filter.getRefboxGameState(packet);
+        refbox_game_state = network_filter.getRefboxGameState(packet);
         World world(*field, *ball, friendly_team, enemy_team);
-        world.updateGameState(game_state);
+        world.updateGameState(*refbox_game_state);
         received_world_callback(world);
     }
 }

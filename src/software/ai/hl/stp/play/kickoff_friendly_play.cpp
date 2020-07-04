@@ -23,8 +23,7 @@ bool KickoffFriendlyPlay::isApplicable(const World &world) const
 
 bool KickoffFriendlyPlay::invariantHolds(const World &world) const
 {
-    return (!world.gameState().isPlaying() || world.gameState().isHalted() ||
-            world.gameState().isStopped());
+    return !world.gameState().isPlaying();
 }
 
 void KickoffFriendlyPlay::getNextTactics(TacticCoroutine::push_type &yield,

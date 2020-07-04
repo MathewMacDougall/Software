@@ -31,7 +31,7 @@ class World final
      *
      * @param field the field for the world
      * @param ball the ball for the world
-     * @param friendly_team the friendly team for the world
+     * @param friendly_eeam the friendly team for the world
      * @param enemy_team the enemy_team for the world
      */
     explicit World(const Field& field, const Ball& ball, const Team& friendly_team,

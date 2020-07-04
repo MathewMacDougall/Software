@@ -18,10 +18,10 @@ WifiBackend::WifiBackend(std::shared_ptr<const NetworkConfig> network_config)
               ->value(),
           network_config->getSSLCommunicationConfig()->GamecontrollerPort()->value(),
           boost::bind(&WifiBackend::receiveWorld, this, _1),
-          DynamicParameters->getSensorFusionConfig()),
-      ssl_proto_client(boost::bind(&Backend::receiveSSLWrapperPacket, this, _1),
-                       boost::bind(&Backend::receiveSSLReferee, this, _1),
-                       network_config->getSSLCommunicationConfig())
+          DynamicParameters->getSensorFusionConfig())
+//      ssl_proto_client(boost::bind(&Backend::receiveSSLWrapperPacket, this, _1),
+//                       boost::bind(&Backend::receiveSSLReferee, this, _1),
+//                       network_config->getSSLCommunicationConfig())
 {
     std::string network_interface =
         DynamicParameters->getNetworkConfig()->NetworkInterface()->value();
