@@ -124,3 +124,4 @@ double ratePassFriendlyCapability(Team friendly_team, const Pass& pass,
  *         field, with a higher value representing a more desirable position
  */
 double getStaticPositionQuality(const Field& field, const Point& position);
+

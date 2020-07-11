@@ -60,6 +60,10 @@ double ratePass(const World& world, const Pass& pass,
     double pass_speed_quality = sigmoid(pass.speed(), min_pass_speed, 0.2) *
                                 (1 - sigmoid(pass.speed(), max_pass_speed, 0.2));
 
+    // Try to pass farther away
+    const double pass_length = (pass.receiverPoint() - pass.passerPoint()).length();
+    const double pass_length_quality = sigmoid(pass_length, 2, 2);
+
     // We ignore shoot pass quality if we're rating for a "RECEIVE_AND_DRIBBLE" pass
     double pass_quality = 0;
     switch (pass_type)
@@ -67,12 +71,12 @@ double ratePass(const World& world, const Pass& pass,
         case RECEIVE_AND_DRIBBLE:
             pass_quality = static_pass_quality * friendly_pass_rating *
                            enemy_pass_rating * in_region_quality *
-                           pass_time_offset_quality * pass_speed_quality;
+                           pass_time_offset_quality * pass_speed_quality * pass_length_quality;
             break;
         case ONE_TOUCH_SHOT:
             pass_quality = static_pass_quality * friendly_pass_rating *
                            enemy_pass_rating * shoot_pass_rating * in_region_quality *
-                           pass_time_offset_quality * pass_speed_quality;
+                           pass_time_offset_quality * pass_speed_quality * pass_length_quality;
             break;
         default:
             throw std::invalid_argument("Unhandled pass type given to `ratePass`");

@@ -83,16 +83,16 @@ void InterceptBallAction::interceptSlowBall(IntentCoroutine::push_type &yield) {
 
     LOG(INFO) << "SLOW BALL: INITIAL INTERCEPT DONE\n\n\n";
 
-    do {
-//        auto face_ball_orientation = (ball.position() - robot->position()).orientation();
-
-//        yield(std::make_unique<MoveIntent>(
-//                robot->id(), robot->position(),
-//                face_ball_orientation, 0, 0,
-//                DribblerEnable::ON, MoveType::NORMAL, AutokickType::NONE,
-//                BallCollisionType::ALLOW));
-        yield(std::make_unique<StopIntent>(robot->id(), false, 0));
-    }while(robot->velocity().length() > 0.01);
+//    do {
+////        auto face_ball_orientation = (ball.position() - robot->position()).orientation();
+//
+////        yield(std::make_unique<MoveIntent>(
+////                robot->id(), robot->position(),
+////                face_ball_orientation, 0, 0,
+////                DribblerEnable::ON, MoveType::NORMAL, AutokickType::NONE,
+////                BallCollisionType::ALLOW));
+//        yield(std::make_unique<StopIntent>(robot->id(), false, 0));
+//    }while(robot->velocity().length() > 0.01);
 
     LOG(INFO) << "SLOW BALL: WSTOPPED WITH BALL \n\n\n";
 }
