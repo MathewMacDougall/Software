@@ -16,18 +16,18 @@ SimulatorRobot::SimulatorRobot(std::weak_ptr<PhysicsRobot> physics_robot)
             [this](PhysicsRobot *robot, PhysicsBall *ball) {
                 this->onChickerBallContact(robot, ball);
             });
-        robot->registerDribblerBallContactCallback(
-            [this](PhysicsRobot *robot, PhysicsBall *ball) {
-                this->onDribblerBallContact(robot, ball);
-            });
-        robot->registerDribblerBallStartContactCallback(
-            [this](PhysicsRobot *robot, PhysicsBall *ball) {
-                this->onDribblerBallStartContact(robot, ball);
-            });
-        robot->registerDribblerBallEndContactCallback(
-            [this](PhysicsRobot *robot, PhysicsBall *ball) {
-                this->onDribblerBallEndContact(robot, ball);
-            });
+        robot->registerMouthBallContactCallback(
+                [this](PhysicsRobot *robot, PhysicsBall *ball) {
+                    this->onDribblerBallContact(robot, ball);
+                });
+        robot->registerMouthBallStartContactCallback(
+                [this](PhysicsRobot *robot, PhysicsBall *ball) {
+                    this->onDribblerBallStartContact(robot, ball);
+                });
+        robot->registerMouthBallEndContactCallback(
+                [this](PhysicsRobot *robot, PhysicsBall *ball) {
+                    this->onDribblerBallEndContact(robot, ball);
+                });
     }
 
     primitive_manager =

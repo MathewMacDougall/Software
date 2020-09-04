@@ -37,7 +37,7 @@ void SimulationContactListener::BeginContact(b2Contact *contact)
         {
             PhysicsBall *ball   = ball_dribbler_pair->first;
             PhysicsRobot *robot = ball_dribbler_pair->second;
-            for (auto contact_callback : robot->getDribblerBallStartContactCallbacks())
+            for (auto contact_callback : robot->getMouthBallStartContactCallbacks())
             {
                 contact_callback(robot, ball);
             }
@@ -79,7 +79,7 @@ void SimulationContactListener::PreSolve(b2Contact *contact,
             contact->SetEnabled(false);
             PhysicsBall *ball   = ball_dribbler_pair->first;
             PhysicsRobot *robot = ball_dribbler_pair->second;
-            for (auto contact_callback : robot->getDribblerBallContactCallbacks())
+            for (auto contact_callback : robot->getMouthBallContactCallbacks())
             {
                 contact_callback(robot, ball);
             }
@@ -119,7 +119,7 @@ void SimulationContactListener::EndContact(b2Contact *contact)
     {
         PhysicsBall *ball   = ball_dribbler_pair->first;
         PhysicsRobot *robot = ball_dribbler_pair->second;
-        for (auto contact_callback : robot->getDribblerBallEndContactCallbacks())
+        for (auto contact_callback : robot->getMouthBallEndContactCallbacks())
         {
             contact_callback(robot, ball);
         }

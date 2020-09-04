@@ -5,8 +5,7 @@
  */
 enum class PhysicsObjectType
 {
-    ROBOT_CHICKER,
-    ROBOT_DRIBBLER,
+    ROBOT_MOUTH,
     ROBOT_BODY,
     BALL
 };

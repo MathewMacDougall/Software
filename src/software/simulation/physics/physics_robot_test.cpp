@@ -345,17 +345,17 @@ TEST_F(PhysicsRobotTest, test_dribbler_ball_contact_callbacks)
                                    AngularVelocity::zero());
     PhysicsRobot physics_robot(0, world, initial_robot_state, 1.0);
 
-    EXPECT_TRUE(physics_robot.getDribblerBallContactCallbacks().empty());
+    EXPECT_TRUE(physics_robot.getMouthBallContactCallbacks().empty());
 
     bool callback_called = false;
     auto callback        = [&callback_called](PhysicsRobot* robot, PhysicsBall* ball) {
         callback_called = true;
     };
 
-    physics_robot.registerDribblerBallContactCallback(callback);
+    physics_robot.registerMouthBallContactCallback(callback);
 
-    ASSERT_EQ(physics_robot.getDribblerBallContactCallbacks().size(), 1);
-    physics_robot.getDribblerBallContactCallbacks().at(0)(nullptr, nullptr);
+    ASSERT_EQ(physics_robot.getMouthBallContactCallbacks().size(), 1);
+    physics_robot.getMouthBallContactCallbacks().at(0)(nullptr, nullptr);
     EXPECT_TRUE(callback_called);
 }
 
@@ -368,17 +368,17 @@ TEST_F(PhysicsRobotTest, test_dribbler_ball_start_contact_callbacks)
                                    AngularVelocity::zero());
     PhysicsRobot physics_robot(0, world, initial_robot_state, 1.0);
 
-    EXPECT_TRUE(physics_robot.getDribblerBallStartContactCallbacks().empty());
+    EXPECT_TRUE(physics_robot.getMouthBallStartContactCallbacks().empty());
 
     bool callback_called = false;
     auto callback        = [&callback_called](PhysicsRobot* robot, PhysicsBall* ball) {
         callback_called = true;
     };
 
-    physics_robot.registerDribblerBallStartContactCallback(callback);
+    physics_robot.registerMouthBallStartContactCallback(callback);
 
-    ASSERT_EQ(physics_robot.getDribblerBallStartContactCallbacks().size(), 1);
-    physics_robot.getDribblerBallStartContactCallbacks().at(0)(nullptr, nullptr);
+    ASSERT_EQ(physics_robot.getMouthBallStartContactCallbacks().size(), 1);
+    physics_robot.getMouthBallStartContactCallbacks().at(0)(nullptr, nullptr);
     EXPECT_TRUE(callback_called);
 }
 
@@ -391,17 +391,17 @@ TEST_F(PhysicsRobotTest, test_dribbler_ball_end_contact_callbacks)
                                    AngularVelocity::zero());
     PhysicsRobot physics_robot(0, world, initial_robot_state, 1.0);
 
-    EXPECT_TRUE(physics_robot.getDribblerBallEndContactCallbacks().empty());
+    EXPECT_TRUE(physics_robot.getMouthBallEndContactCallbacks().empty());
 
     bool callback_called = false;
     auto callback        = [&callback_called](PhysicsRobot* robot, PhysicsBall* ball) {
         callback_called = true;
     };
 
-    physics_robot.registerDribblerBallEndContactCallback(callback);
+    physics_robot.registerMouthBallEndContactCallback(callback);
 
-    ASSERT_EQ(physics_robot.getDribblerBallEndContactCallbacks().size(), 1);
-    physics_robot.getDribblerBallEndContactCallbacks().at(0)(nullptr, nullptr);
+    ASSERT_EQ(physics_robot.getMouthBallEndContactCallbacks().size(), 1);
+    physics_robot.getMouthBallEndContactCallbacks().at(0)(nullptr, nullptr);
     EXPECT_TRUE(callback_called);
 }
 
