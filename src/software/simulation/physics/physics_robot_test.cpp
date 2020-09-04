@@ -165,7 +165,6 @@ TEST_F(PhysicsRobotTest, test_physics_robot_dimensions_left_side_inside_radius)
     // Use the cross-product to check if the new velocity vector is rotated
     // clockwise of the old vector
     EXPECT_LT(b2Cross(b2Vec2(-2, 0), ball_body->GetLinearVelocity()), 0);
-    EXPECT_NEAR(b2Vec2(-2, 0).Length(), ball_body->GetLinearVelocity().Length(), 0.1);
 }
 
 TEST_F(PhysicsRobotTest, test_physics_robot_dimensions_right_side_outside_radius)
@@ -203,7 +202,6 @@ TEST_F(PhysicsRobotTest, test_physics_robot_dimensions_right_side_inside_radius)
     // Use the cross-product to check if the new velocity vector is rotated
     // counter-clockwise of the old vector
     EXPECT_GT(b2Cross(b2Vec2(-2, 0), ball_body->GetLinearVelocity()), 0);
-    EXPECT_NEAR(b2Vec2(-2, 0).Length(), ball_body->GetLinearVelocity().Length(), 0.1);
 }
 
 TEST_F(PhysicsRobotTest, test_physics_robot_dimensions_back_side_outside_radius)
@@ -241,7 +239,6 @@ TEST_F(PhysicsRobotTest, test_physics_robot_dimensions_back_side_inside_radius)
     // Use the cross-product to check if the new velocity vector is rotated
     // clockwise of the old vector
     EXPECT_LT(b2Cross(b2Vec2(0, -2), ball_body->GetLinearVelocity()), 0);
-    EXPECT_NEAR(b2Vec2(0, -2).Length(), ball_body->GetLinearVelocity().Length(), 0.1);
 }
 
 TEST_F(PhysicsRobotTest, test_physics_robot_dimensions_front_side_outside_robot_body)
@@ -286,21 +283,20 @@ TEST_F(PhysicsRobotTest,
         world->Step(static_cast<float>(1.0 / 60.0), 5, 8);
 
         // Once the ball has passed y=0 we expect it to have collided with the front of
-        // the robot
+        // the robot. This is to check that the ball collided with the front-left fixture
+        // of the robot, and not the front-right fixture. If we didn't check for a collision
+        // by y=0, we would not be able to tell the fixtures apart.
         if (ball_body->GetPosition().y <= 0)
         {
             // Use the cross-product to check if the new velocity vector is rotated
             // counter-clockwise of the old vector
             EXPECT_GT(b2Cross(b2Vec2(0, -2), ball_body->GetLinearVelocity()), 0);
-            EXPECT_NEAR(b2Vec2(0, -2).Length(), ball_body->GetLinearVelocity().Length(),
-                        0.1);
         }
     }
 
     // Use the cross-product to check if the new velocity vector is rotated
     // counter-clockwise of the old vector
     EXPECT_GT(b2Cross(b2Vec2(0, -2), ball_body->GetLinearVelocity()), 0);
-    EXPECT_NEAR(b2Vec2(0, -2).Length(), ball_body->GetLinearVelocity().Length(), 0.1);
 
     // Create a new body and roll it the opposite way to check we collide with the front
     // of the robot from both directions, since it's made of 2 separate pieces with a bap
@@ -319,24 +315,23 @@ TEST_F(PhysicsRobotTest,
         world->Step(static_cast<float>(1.0 / 60.0), 5, 8);
 
         // Once the ball has passed y=0 we expect it to have collided with the front of
-        // the robot
+        // the robot. This is to check that the ball collided with the front-left fixture
+        // of the robot, and not the front-right fixture. If we didn't check for a collision
+        // by y=0, we would not be able to tell the fixtures apart.
         if (ball_body->GetPosition().y >= 0)
         {
             // Use the cross-product to check if the new velocity vector is rotated
             // clockwise of the old vector
             EXPECT_LT(b2Cross(b2Vec2(0, 2), ball_body->GetLinearVelocity()), 0);
-            EXPECT_NEAR(b2Vec2(0, 2).Length(), ball_body->GetLinearVelocity().Length(),
-                        0.1);
         }
     }
 
     // Use the cross-product to check if the new velocity vector is rotated
     // clockwise of the old vector
     EXPECT_LT(b2Cross(b2Vec2(0, 2), ball_body->GetLinearVelocity()), 0);
-    EXPECT_NEAR(b2Vec2(0, 2).Length(), ball_body->GetLinearVelocity().Length(), 0.1);
 }
 
-TEST_F(PhysicsRobotTest, test_dribbler_ball_contact_callbacks)
+TEST_F(PhysicsRobotTest, test_mouth_ball_contact_callbacks)
 {
     b2Vec2 gravity(0, 0);
     auto world = std::make_shared<b2World>(gravity);
@@ -359,7 +354,7 @@ TEST_F(PhysicsRobotTest, test_dribbler_ball_contact_callbacks)
     EXPECT_TRUE(callback_called);
 }
 
-TEST_F(PhysicsRobotTest, test_dribbler_ball_start_contact_callbacks)
+TEST_F(PhysicsRobotTest, test_mouth_ball_start_contact_callbacks)
 {
     b2Vec2 gravity(0, 0);
     auto world = std::make_shared<b2World>(gravity);
@@ -382,7 +377,7 @@ TEST_F(PhysicsRobotTest, test_dribbler_ball_start_contact_callbacks)
     EXPECT_TRUE(callback_called);
 }
 
-TEST_F(PhysicsRobotTest, test_dribbler_ball_end_contact_callbacks)
+TEST_F(PhysicsRobotTest, test_mouth_ball_end_contact_callbacks)
 {
     b2Vec2 gravity(0, 0);
     auto world = std::make_shared<b2World>(gravity);
@@ -402,29 +397,6 @@ TEST_F(PhysicsRobotTest, test_dribbler_ball_end_contact_callbacks)
 
     ASSERT_EQ(physics_robot.getMouthBallEndContactCallbacks().size(), 1);
     physics_robot.getMouthBallEndContactCallbacks().at(0)(nullptr, nullptr);
-    EXPECT_TRUE(callback_called);
-}
-
-TEST_F(PhysicsRobotTest, test_chicker_ball_start_contact_callbacks)
-{
-    b2Vec2 gravity(0, 0);
-    auto world = std::make_shared<b2World>(gravity);
-
-    RobotState initial_robot_state(Point(0, 0), Vector(0, 0), Angle::zero(),
-                                   AngularVelocity::zero());
-    PhysicsRobot physics_robot(0, world, initial_robot_state, 1.0);
-
-    EXPECT_TRUE(physics_robot.getChickerBallStartContactCallbacks().empty());
-
-    bool callback_called = false;
-    auto callback        = [&callback_called](PhysicsRobot* robot, PhysicsBall* ball) {
-        callback_called = true;
-    };
-
-    physics_robot.registerChickerBallStartContactCallback(callback);
-
-    ASSERT_EQ(physics_robot.getChickerBallStartContactCallbacks().size(), 1);
-    physics_robot.getChickerBallStartContactCallbacks().at(0)(nullptr, nullptr);
     EXPECT_TRUE(callback_called);
 }
 
