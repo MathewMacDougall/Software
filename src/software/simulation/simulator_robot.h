@@ -221,40 +221,39 @@ class SimulatorRobot
    private:
     /**
      * A function that is called during every physics step for as long as the ball
-     * is touching this robot's chicker
+     * is touching this robot's mouth
      *
      * @param physics_robot The robot involved in the contact
-     * @param physics_ball The ball invovled in the contact
+     * @param physics_ball The ball involved in the contact
      */
-    void onChickerBallContact(PhysicsRobot* physics_robot, PhysicsBall* physics_ball);
+    void onMouthBallContact(PhysicsRobot* physics_robot, PhysicsBall* physics_ball);
 
     /**
      * A function that is called during every physics step for as long as the ball
-     * is touching this robot's dribbler
+     * is touching this robot's mouth
      *
      * @param physics_robot The robot involved in the contact
-     * @param physics_ball The ball invovled in the contact
+     * @param physics_ball The ball involved in the contact
      */
-    void onDribblerBallContact(PhysicsRobot* physics_robot, PhysicsBall* physics_ball);
+    void onMouthBallStartContact(PhysicsRobot* physics_robot, PhysicsBall* physics_ball);
 
     /**
-     * A function that is called during once when the ball starts touching
-     * this robot's dribbler.
+     * A function that is called once when the ball stops touching
+     * this robot's mouth.
      *
      * @param physics_robot The robot involved in the contact
-     * @param physics_ball The ball invovled in the contact
+     * @param physics_ball The ball involved in the contact
      */
-    void onDribblerBallStartContact(PhysicsRobot* physics_robot,
-                                    PhysicsBall* physics_ball);
+    void onMouthBallEndContact(PhysicsRobot* physics_robot, PhysicsBall* physics_ball);
 
     /**
-     * A function that is called during once when the ball stops touching
-     * this robot's dribbler.
+     * Applies force to the physics ball to simulate it being dribbled by the
+     * physics robot.
      *
-     * @param physics_robot The robot involved in the contact
-     * @param physics_ball The ball invovled in the contact
+     * @param physics_robot The robot that should dribble the ball
+     * @param physics_ball The ball to be dribbled
      */
-    void onDribblerBallEndContact(PhysicsRobot* physics_robot, PhysicsBall* physics_ball);
+    void applyDribblerForce(PhysicsRobot* physics_robot, PhysicsBall* physics_ball);
 
     /**
      * Helper functions that check if the current pointer to the physics_robot is valid
@@ -284,7 +283,7 @@ class SimulatorRobot
         bool can_be_chicked;
     } DribblerBall;
 
-    std::vector<DribblerBall> balls_in_dribbler_area;
+    std::vector<DribblerBall> balls_in_mouth;
 
     std::unique_ptr<PrimitiveManager, FirmwarePrimitiveManagerDeleter> primitive_manager;
 
