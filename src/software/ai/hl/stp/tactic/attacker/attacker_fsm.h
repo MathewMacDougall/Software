@@ -7,6 +7,7 @@
 #include "software/ai/hl/stp/tactic/tactic.h"
 #include "software/ai/intent/move_intent.h"
 #include "software/ai/passing/pass.h"
+#include "software/ai/evaluation/find_open_areas.h"
 
 MAKE_ENUM(AttackerFSMStates,
         KEEP_AWAY,
@@ -160,13 +161,43 @@ struct AttackerFSM
          */
         const auto keep_away = [&](auto event,
                                   back::process<DribbleFSM::Update> processEvent) {
-            _current_state = AttackerFSMStates::KEEP_AWAY;
-            std::cout << "in keep away" << std::endl;
-            // TODO (#2073): Implement a more effective keep away tactic
+//            _current_state = AttackerFSMStates::KEEP_AWAY;
+//            std::cout << "in keep away" << std::endl;
+//            // TODO (#2073): Implement a more effective keep away tactic
+//            DribbleFSM::ControlParams control_params{
+//                .dribble_destination       = std::nullopt,
+//                .final_dribble_orientation = std::nullopt,
+//                .allow_excessive_dribbling = true};
+//            processEvent(DribbleFSM::Update(control_params, event.common));
+
+// Face away from the closest enemy
+            std::vector<Robot> close_enemies;
+            for(auto& robot : event.common.world.enemyTeam().getAllRobots()) {
+                auto dist = [&](auto& enemy) {
+                    return (event.common.robot.position() - enemy.position()).length();
+                };
+                if (dist(robot) < 0.5) {
+                    close_enemies.emplace_back(robot);
+                }
+            }
+            std::optional<Angle> orientation = std::nullopt;
+            auto good_open_circles = findGoodChipTargets(event.common.world);
+            std::optional<Point> dest = std::nullopt;
+            if(good_open_circles.size() > 0) {
+                dest = good_open_circles[0].origin();
+            }
+            if (close_enemies.size() > 0) {
+                // Choose an orientation that tries to point away from close enemies
+                Vector sum(0,0);
+                for(auto& robot : close_enemies) {
+                    sum +=event.common.robot.position() - robot.position();
+                }
+                orientation = (sum / static_cast<double>(close_enemies.size())).orientation();
+            }
             DribbleFSM::ControlParams control_params{
-                .dribble_destination       = std::nullopt,
-                .final_dribble_orientation = std::nullopt,
-                .allow_excessive_dribbling = true};
+                    .dribble_destination       = std::nullopt,
+                    .final_dribble_orientation = orientation,
+                    .allow_excessive_dribbling = false};
             processEvent(DribbleFSM::Update(control_params, event.common));
         };
 

@@ -94,12 +94,9 @@ void ShootOrPassPlay::getNextTactics(TacticCoroutine::push_type &yield,
             if(std::find(adjacent_zones.begin(), adjacent_zones.end(), ranked_zones[i]) != adjacent_zones.end()) {
                 ranked_zones.erase(ranked_zones.begin() + i);
             }
-//            if (attacker->getAssignedRobot() && contains(pitch_division->getZone(ranked_zones[i]), attacker->getAssignedRobot()->position())) {
-//                ranked_zones.erase(ranked_zones.begin()+i);
-//                break;
-//            }
         }
         Zones cherry_pick_region_2 = {ranked_zones[1]};
+
 
         std::get<0>(crease_defender_tactics)
                 ->updateControlParams(world.ball().position(), CreaseDefenderAlignment::LEFT);
@@ -118,9 +115,12 @@ void ShootOrPassPlay::getNextTactics(TacticCoroutine::push_type &yield,
                                                   MaxAllowedSpeedMode ::PHYSICAL_LIMIT);
 
         auto min_score_to_commit_to_pass = play_config->getShootOrPassPlayConfig()->getAbsMinPassScore()->value();
+        if(current_committed_pass.has_value()) {
+            current_committed_pass->rating = ratePass(world, current_committed_pass->pass, world.field().fieldLines(), play_config->getPassingConfig());
+        }
         if (!current_committed_pass.has_value() && best_pass_and_score_so_far.rating > min_score_to_commit_to_pass) {
             current_committed_pass = best_pass_and_score_so_far;
-        }else if(current_committed_pass.has_value() && current_committed_pass->rating < min_score_to_commit_to_pass) {
+        }else if(!attacker->done() && current_committed_pass.has_value() && current_committed_pass->rating < 0.01) {
             current_committed_pass = std::nullopt;
         }
 
