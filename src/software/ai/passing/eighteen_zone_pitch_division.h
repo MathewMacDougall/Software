@@ -51,3 +51,29 @@ class EighteenZonePitchDivision : public FieldPitchDivision<EighteenZoneId>
     std::vector<Rectangle> pitch_division_;
     std::vector<EighteenZoneId> zones_;
 };
+
+
+//
+MAKE_ENUM(FourZoneId,
+          ZONE_1, ZONE_2, ZONE_3, ZONE_4);
+// clang-format on
+
+class FourZonePitchDivision : public FieldPitchDivision<FourZoneId>
+{
+public:
+    /**
+     * The field is divided into 18 equally sized rectangles.
+     *
+     * @param field The field to divide up into 18 zones (see ascii art above)
+     */
+    FourZonePitchDivision(const Field& field);
+
+    const Rectangle& getZone(FourZoneId zone_id) const override;
+    const std::vector<FourZoneId>& getAllZoneIds() const override;
+    FourZoneId getZoneId(const Point& position) const override;
+
+private:
+    std::shared_ptr<Rectangle> field_lines_;
+    std::vector<Rectangle> pitch_division_;
+    std::vector<FourZoneId> zones_;
+};

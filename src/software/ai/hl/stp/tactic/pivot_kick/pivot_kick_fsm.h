@@ -47,6 +47,7 @@ struct PivotKickFSM
                     .final_dribble_orientation = event.control_params.kick_direction,
                     .allow_excessive_dribbling = false};
 
+                std::cout << "get possession and pivot" << std::endl;
                 processEvent(DribbleFSM::Update(control_params, event.common));
             };
 
@@ -61,6 +62,7 @@ struct PivotKickFSM
                 event.control_params.kick_direction, 0, DribblerMode::OFF,
                 BallCollisionType::ALLOW, event.control_params.auto_chip_or_kick,
                 MaxAllowedSpeedMode::PHYSICAL_LIMIT, 0.0));
+            std::cout << "kick ball state" << std::endl;
         };
 
         /**

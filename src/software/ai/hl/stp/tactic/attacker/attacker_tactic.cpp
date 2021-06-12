@@ -19,7 +19,7 @@ AttackerTactic::AttackerTactic(
 
 void AttackerTactic::updateWorldParams(const World& world) {}
 
-void AttackerTactic::updateControlParams(const Pass& updated_pass)
+void AttackerTactic::updateControlParams(const std::optional<Pass>& updated_pass)
 {
     // Update the control parameters stored by this Tactic
     this->pass = updated_pass;
@@ -56,6 +56,9 @@ void AttackerTactic::updateIntent(const TacticUpdate& tactic_update)
 bool AttackerTactic::done() const
 {
     return fsm.is(boost::sml::X);
+//    return fsm.is(AttackerFSM::)
+//    return fsm.is(boost::sml::X);
+//    return fsm.is(AttackerFSM::pivot_kick_s);
 }
 
 double AttackerTactic::calculateRobotCost(const Robot& robot, const World& world) const
@@ -85,3 +88,29 @@ void AttackerTactic::accept(TacticVisitor& visitor) const
 {
     visitor.visit(*this);
 }
+
+bool AttackerTactic::isShooting() {
+    return false;
+//    return fsm.is(AttackerFSM::pivot_kick_s);
+//   fsm.visit_current_states([](auto state) { std::cout << state.c_str() << std::endl; });
+//    fsm.visit_current_states([](auto state) { std::cout << TYPENAME(state). << std::endl; });
+//    fsm.vi
+//    fsm.visit_current_states([](auto state) {
+//        std::cout << "state" << std::endl;
+//        std::cout << state.c_str() << std::endl;
+//    });
+//    const auto state_name = state_name_visitor<decltype(fsm)>{fsm};
+//    fsm.visit_current_states(state_name);  // s1
+
+
+//    return "";
+}
+
+bool AttackerTactic::isKeepAway() {
+//    return fsm.is(AttackerFSM::keep_away_s);
+return false;
+}
+
+//AttackerFSMStates AttackerTactic::currentFsmState() {
+////    return fsm._
+//}
