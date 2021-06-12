@@ -85,6 +85,7 @@ void ShootOrPassPlay::getNextTactics(TacticCoroutine::push_type &yield,
         for(size_t i = 0; i < ranked_zones.size(); i++) {
             if (attacker->getAssignedRobot() && contains(pitch_division->getZone(ranked_zones[i]), attacker->getAssignedRobot()->position())) {
                 ranked_zones.erase(ranked_zones.begin()+i);
+                i--;
                 break;
             }
         }
@@ -93,6 +94,7 @@ void ShootOrPassPlay::getNextTactics(TacticCoroutine::push_type &yield,
         for(size_t i = 1; i < ranked_zones.size(); i++) {
             if(std::find(adjacent_zones.begin(), adjacent_zones.end(), ranked_zones[i]) != adjacent_zones.end()) {
                 ranked_zones.erase(ranked_zones.begin() + i);
+                i--;
             }
         }
         Zones cherry_pick_region_2 = {ranked_zones[1]};
