@@ -45,6 +45,7 @@ class EighteenZonePitchDivision : public FieldPitchDivision<EighteenZoneId>
     const Rectangle& getZone(EighteenZoneId zone_id) const override;
     const std::vector<EighteenZoneId>& getAllZoneIds() const override;
     EighteenZoneId getZoneId(const Point& position) const override;
+    const std::vector<EighteenZoneId> getAdjacentZoneIds(EighteenZoneId zone_id) const override ;
 
    private:
     std::shared_ptr<Rectangle> field_lines_;
@@ -71,6 +72,7 @@ public:
     const Rectangle& getZone(FourZoneId zone_id) const override;
     const std::vector<FourZoneId>& getAllZoneIds() const override;
     FourZoneId getZoneId(const Point& position) const override;
+    const std::vector<FourZoneId> getAdjacentZoneIds(FourZoneId zone_id) const override ;
 
 private:
     std::shared_ptr<Rectangle> field_lines_;

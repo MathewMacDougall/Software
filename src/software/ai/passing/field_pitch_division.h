@@ -45,4 +45,5 @@ class FieldPitchDivision
      * @return A vector of all the zone ids
      */
     virtual const std::vector<ZoneEnum>& getAllZoneIds() const = 0;
+    virtual const std::vector<ZoneEnum> getAdjacentZoneIds(ZoneEnum zone_id) const = 0;
 };

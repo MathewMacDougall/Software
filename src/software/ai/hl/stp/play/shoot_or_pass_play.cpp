@@ -87,9 +87,18 @@ void ShootOrPassPlay::getNextTactics(TacticCoroutine::push_type &yield,
                 ranked_zones.erase(ranked_zones.begin()+i);
                 break;
             }
-
         }
         Zones cherry_pick_region_1 = {ranked_zones[0]};
+        std::vector<EighteenZoneId> adjacent_zones = pitch_division->getAdjacentZoneIds(ranked_zones[0]);
+        for(size_t i = 1; i < ranked_zones.size(); i++) {
+            if(std::find(adjacent_zones.begin(), adjacent_zones.end(), ranked_zones[i]) != adjacent_zones.end()) {
+                ranked_zones.erase(ranked_zones.begin() + i);
+            }
+//            if (attacker->getAssignedRobot() && contains(pitch_division->getZone(ranked_zones[i]), attacker->getAssignedRobot()->position())) {
+//                ranked_zones.erase(ranked_zones.begin()+i);
+//                break;
+//            }
+        }
         Zones cherry_pick_region_2 = {ranked_zones[1]};
 
         std::get<0>(crease_defender_tactics)

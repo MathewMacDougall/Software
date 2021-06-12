@@ -48,10 +48,178 @@ const std::vector<EighteenZoneId>& EighteenZonePitchDivision::getAllZoneIds() co
     return zones_;
 }
 
-
-
-
-
+const std::vector<EighteenZoneId> EighteenZonePitchDivision::getAdjacentZoneIds(EighteenZoneId zone_id) const {
+    std::vector<EighteenZoneId> adjacent_zones;
+    switch(zone_id) {
+        case EighteenZoneId::ZONE_1:
+            adjacent_zones = {
+                    EighteenZoneId::ZONE_4,
+                    EighteenZoneId::ZONE_5,
+                    EighteenZoneId::ZONE_2
+            };
+            break;
+        case EighteenZoneId::ZONE_2:
+            adjacent_zones = {
+                    EighteenZoneId::ZONE_1,
+                    EighteenZoneId::ZONE_4,
+                    EighteenZoneId::ZONE_5,
+                    EighteenZoneId::ZONE_3,
+                    EighteenZoneId::ZONE_6
+            };
+            break;
+        case EighteenZoneId::ZONE_3:
+            adjacent_zones = {
+                    EighteenZoneId::ZONE_2,
+                    EighteenZoneId::ZONE_5,
+                    EighteenZoneId::ZONE_6
+            };
+            break;
+        case EighteenZoneId::ZONE_4:
+            adjacent_zones = {
+                    EighteenZoneId::ZONE_1,
+                    EighteenZoneId::ZONE_2,
+                    EighteenZoneId::ZONE_5,
+                    EighteenZoneId::ZONE_7,
+                    EighteenZoneId::ZONE_8,
+            };
+            break;
+        case EighteenZoneId::ZONE_5:
+            adjacent_zones = {
+                    EighteenZoneId::ZONE_1,
+                    EighteenZoneId::ZONE_2,
+                    EighteenZoneId::ZONE_3,
+                    EighteenZoneId::ZONE_4,
+                    EighteenZoneId::ZONE_6,
+                    EighteenZoneId::ZONE_7,
+                    EighteenZoneId::ZONE_8,
+                    EighteenZoneId::ZONE_9
+            };
+            break;
+        case EighteenZoneId::ZONE_6:
+            adjacent_zones = {
+                    EighteenZoneId::ZONE_2,
+                    EighteenZoneId::ZONE_3,
+                    EighteenZoneId::ZONE_5,
+                    EighteenZoneId::ZONE_8,
+                    EighteenZoneId::ZONE_9
+            };
+            break;
+        case EighteenZoneId::ZONE_7:
+            adjacent_zones = {
+                    EighteenZoneId::ZONE_4,
+                    EighteenZoneId::ZONE_5,
+                    EighteenZoneId::ZONE_8,
+                    EighteenZoneId::ZONE_10,
+                    EighteenZoneId::ZONE_11
+            };
+            break;
+        case EighteenZoneId::ZONE_8:
+            adjacent_zones = {
+                    EighteenZoneId::ZONE_4,
+                    EighteenZoneId::ZONE_5,
+                    EighteenZoneId::ZONE_6,
+                    EighteenZoneId::ZONE_7,
+                    EighteenZoneId::ZONE_9,
+                    EighteenZoneId::ZONE_10,
+                    EighteenZoneId::ZONE_11,
+                    EighteenZoneId::ZONE_12
+            };
+            break;
+        case EighteenZoneId::ZONE_9:
+            adjacent_zones = {
+                    EighteenZoneId::ZONE_5,
+                    EighteenZoneId::ZONE_6,
+                    EighteenZoneId::ZONE_8,
+                    EighteenZoneId::ZONE_11,
+                    EighteenZoneId::ZONE_12
+            };
+            break;
+        case EighteenZoneId::ZONE_10:
+            adjacent_zones = {
+                    EighteenZoneId::ZONE_7,
+                    EighteenZoneId::ZONE_8,
+                    EighteenZoneId::ZONE_11,
+                    EighteenZoneId::ZONE_13,
+                    EighteenZoneId::ZONE_14
+            };
+            break;
+        case EighteenZoneId::ZONE_11:
+            adjacent_zones = {
+                    EighteenZoneId::ZONE_7,
+                    EighteenZoneId::ZONE_8,
+                    EighteenZoneId::ZONE_9,
+                    EighteenZoneId::ZONE_10,
+                    EighteenZoneId::ZONE_12,
+                    EighteenZoneId::ZONE_13,
+                    EighteenZoneId::ZONE_14,
+                    EighteenZoneId::ZONE_15
+            };
+            break;
+        case EighteenZoneId::ZONE_12:
+            adjacent_zones = {
+                    EighteenZoneId::ZONE_8,
+                    EighteenZoneId::ZONE_9,
+                    EighteenZoneId::ZONE_11,
+                    EighteenZoneId::ZONE_14,
+                    EighteenZoneId::ZONE_15
+            };
+            break;
+        case EighteenZoneId::ZONE_13:
+            adjacent_zones = {
+                    EighteenZoneId::ZONE_10,
+                    EighteenZoneId::ZONE_11,
+                    EighteenZoneId::ZONE_14,
+                    EighteenZoneId::ZONE_16,
+                    EighteenZoneId::ZONE_17
+            };
+            break;
+        case EighteenZoneId::ZONE_14:
+            adjacent_zones = {
+                    EighteenZoneId::ZONE_10,
+                    EighteenZoneId::ZONE_11,
+                    EighteenZoneId::ZONE_12,
+                    EighteenZoneId::ZONE_13,
+                    EighteenZoneId::ZONE_15,
+                    EighteenZoneId::ZONE_16,
+                    EighteenZoneId::ZONE_17,
+                    EighteenZoneId::ZONE_18
+            };
+            break;
+        case EighteenZoneId::ZONE_15:
+            adjacent_zones = {
+                    EighteenZoneId::ZONE_11,
+                    EighteenZoneId::ZONE_12,
+                    EighteenZoneId::ZONE_14,
+                    EighteenZoneId::ZONE_17,
+                    EighteenZoneId::ZONE_18
+            };
+            break;
+        case EighteenZoneId::ZONE_16:
+            adjacent_zones = {
+                    EighteenZoneId::ZONE_13,
+                    EighteenZoneId::ZONE_14,
+                    EighteenZoneId::ZONE_17
+            };
+            break;
+        case EighteenZoneId::ZONE_17:
+            adjacent_zones = {
+                    EighteenZoneId::ZONE_13,
+                    EighteenZoneId::ZONE_14,
+                    EighteenZoneId::ZONE_15,
+                    EighteenZoneId::ZONE_16,
+                    EighteenZoneId::ZONE_18
+            };
+            break;
+        case EighteenZoneId::ZONE_18:
+            adjacent_zones = {
+                    EighteenZoneId::ZONE_14,
+                    EighteenZoneId::ZONE_15,
+                    EighteenZoneId::ZONE_17
+            };
+            break;
+    }
+    return adjacent_zones;
+}
 
 
 FourZonePitchDivision::FourZonePitchDivision(const Field& field)
@@ -113,4 +281,8 @@ FourZoneId FourZonePitchDivision::getZoneId(const Point& position) const
 const std::vector<FourZoneId>& FourZonePitchDivision::getAllZoneIds() const
 {
     return zones_;
+}
+
+const std::vector<FourZoneId> FourZonePitchDivision::getAdjacentZoneIds(FourZoneId zone_id) const {
+    return std::vector<FourZoneId>();
 }
