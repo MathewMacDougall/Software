@@ -5,6 +5,7 @@
 #include "software/ai/passing/cost_function.h"
 #include "software/ai/passing/pass_evaluation.h"
 #include "software/ai/passing/pass_generator.h"
+#include "software/ai/passing/pass_with_rating.h"
 
 template <class ZoneEnum>
 PassGenerator<ZoneEnum>::PassGenerator(
@@ -27,6 +28,7 @@ PassEvaluation<ZoneEnum> PassGenerator<ZoneEnum>::generatePassEvaluation(
         current_best_passes_ = generated_passes;
     }
     auto optimized_passes = optimizePasses(world, generated_passes);
+    current_best_passes_ = optimizePasses(world, current_best_passes_);
 
     updatePasses(world, optimized_passes);
 
@@ -51,15 +53,27 @@ ZonePassMap<ZoneEnum> PassGenerator<ZoneEnum>::samplePasses(const World& world)
         std::uniform_real_distribution x_distribution(zone.xMin(), zone.xMax());
         std::uniform_real_distribution y_distribution(zone.yMin(), zone.yMax());
 
-        auto pass =
-            Pass(world.ball().position(),
-                 Point(x_distribution(random_num_gen_), y_distribution(random_num_gen_)),
-                 speed_distribution(random_num_gen_));
+        std::optional<PassWithRating> best_pass_so_far;
+        for(int i = 0; i < 10; i++) {
+            auto pass =
+                    Pass(world.ball().position(),
+                         Point(x_distribution(random_num_gen_), y_distribution(random_num_gen_)),
+                         speed_distribution(random_num_gen_));
+            auto rating = ratePass(world, pass, zone, passing_config_);
+            if(!best_pass_so_far || rating > best_pass_so_far->rating) {
+                best_pass_so_far = PassWithRating({
+                    .pass = pass,
+                    .rating = rating
+                });
+            }
+        }
 
-        passes.emplace(
-            zone_id,
-            PassWithRating{pass, ratePass(world, pass, pitch_division_->getZone(zone_id),
-                                          passing_config_)});
+        if(best_pass_so_far) {
+            passes.emplace(
+                    zone_id,
+                    PassWithRating{best_pass_so_far->pass, ratePass(world, best_pass_so_far->pass, pitch_division_->getZone(zone_id),
+                                                  passing_config_)});
+        }
     }
 
     return passes;
