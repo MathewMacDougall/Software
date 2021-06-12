@@ -45,7 +45,7 @@
      name: min_pass_speed_m_per_s
      min: 0
      max: 5
-     value: 4.0
+     value: 4.5
      description: "The minimum pass speed (in m/s)"
  - double:
      name: max_pass_speed_m_per_s
@@ -78,7 +78,7 @@
      name: time_to_receiver_state_slack_s
      min: -2.0
      max: 2.0
-     value: -0.2
+     value: 0.0
      description: "TODO"
  - double:
      name: receiver_point_to_ball_min_dist
