@@ -307,7 +307,7 @@ double ratePassFriendlyCapability(Team friendly_team, const Pass& pass,
     // Create a sigmoid that goes to 0 as the time required to get to the reception
     // point exceeds the time we would need to get there by
     double sigmoid_width                  = 0.5;
-    double time_to_receiver_state_slack_s = 0.19;
+    double time_to_receiver_state_slack_s = passing_config->getTimeToReceiverStateSlackS()->value();
 
     return sigmoid(
         receive_time.toSeconds(),
