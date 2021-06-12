@@ -342,7 +342,7 @@ double getStaticPositionQuality(const Field& field, const Point& position,
     // Add a negative weight for positions closer to our goal
     Vector vec_to_friendly_goal = Vector(field.friendlyGoalCenter().x() - position.x(),
                                          field.friendlyGoalCenter().y() - position.y());
-    double distance_to_friendly_goal = vec_to_friendly_goal.length();
+    double distance_to_friendly_goal = vec_to_friendly_goal.length() / 2.0;
     double near_friendly_goal_min_shift = 2;
     double near_friendly_goal_max_shift = 4.5;
     double near_friendly_goal_half_shift = (near_friendly_goal_max_shift + near_friendly_goal_min_shift) / 2.0;
