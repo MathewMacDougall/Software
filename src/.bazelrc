@@ -31,3 +31,7 @@ build --test_env=XDG_RUNTIME_DIR
 build --test_env=DISPLAY
 
 test --cache_test_results=no
+
+build --cxxopt=-Wno-unused-variable
+build --cxxopt=-Wno-unused-but-set-variable
+
