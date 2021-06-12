@@ -82,8 +82,15 @@ void ShootOrPassPlay::getNextTactics(TacticCoroutine::push_type &yield,
         auto pass_eval    = pass_generator.generatePassEvaluation(world);
         auto best_pass_and_score_so_far = pass_eval.getBestPassOnField();
         auto ranked_zones = pass_eval.rankZonesForReceiving(world, world.ball().position());
+        for(size_t i = 0; i < ranked_zones.size(); i++) {
+            if (attacker->getAssignedRobot() && contains(pitch_division->getZone(ranked_zones[i]), attacker->getAssignedRobot()->position())) {
+                ranked_zones.erase(ranked_zones.begin()+i);
+                break;
+            }
+
+        }
         Zones cherry_pick_region_1 = {ranked_zones[0]};
-        Zones cherry_pick_region_2 = {ranked_zones[4]};
+        Zones cherry_pick_region_2 = {ranked_zones[1]};
 
         std::get<0>(crease_defender_tactics)
                 ->updateControlParams(world.ball().position(), CreaseDefenderAlignment::LEFT);
