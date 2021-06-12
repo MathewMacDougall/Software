@@ -274,7 +274,7 @@ PassWithRating FreeKickPlay::shootOrFindPassStage(
         std::get<1>(crease_defender_tactics)
             ->updateControlParams(world.ball().position(),
                                   CreaseDefenderAlignment::RIGHT);
-        yield({{align_to_ball_tactic, shoot_tactic, cherry_pick_tactic_1,
+        yield({{align_to_ball_tactic, cherry_pick_tactic_1,
                 cherry_pick_tactic_2, std::get<0>(crease_defender_tactics),
                 std::get<1>(crease_defender_tactics)}});
 
@@ -288,6 +288,7 @@ PassWithRating FreeKickPlay::shootOrFindPassStage(
         min_score = 1 - std::min(time_since_commit_stage_start.toSeconds() /
                                      MAX_TIME_TO_COMMIT_TO_PASS.toSeconds(),
                                  1.0);
+//        std::cout << "MIN SCORE " << min_score << std::endl;
     } while (best_pass_and_score_so_far.rating < min_score);
     return best_pass_and_score_so_far;
 }

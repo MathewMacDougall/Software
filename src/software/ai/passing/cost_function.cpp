@@ -35,7 +35,7 @@ double ratePass(const World& world, const Pass& pass, const Rectangle& zone,
     double min_pass_speed     = passing_config->getMinPassSpeedMPerS()->value();
     double max_pass_speed     = passing_config->getMaxPassSpeedMPerS()->value();
     double pass_speed_quality = sigmoid(pass.speed(), min_pass_speed, 0.2) *
-                                (1 - sigmoid(pass.speed(), max_pass_speed, 0.2));
+                                (1 - sigmoid(pass.speed(), max_pass_speed+0.1, 0.2));
 //    double weighted_average = (
 //            (1.0 * static_pass_quality) +
 //            (1.0 * friendly_pass_rating) +

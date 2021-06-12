@@ -19,12 +19,15 @@ class PassingEvaluationTest : public testing::Test
             std::make_shared<Rectangle>(Field::createSSLDivisionBField().fieldLines());
         passing_config         = std::make_shared<PassingConfig>();
         avg_desired_pass_speed = 3.9;
+        passing_config->getMutableMinPassSpeedMPerS()->setValue(3.5);
+        passing_config->getMutableMaxPassSpeedMPerS()->setValue(5.5);
+
     }
 
     double avg_desired_pass_speed;
 
     std::shared_ptr<Rectangle> entire_field;
-    std::shared_ptr<const PassingConfig> passing_config;
+    std::shared_ptr<PassingConfig> passing_config;
 };
 
 // This test is disabled to speed up CI, it can be enabled by removing "DISABLED_" from
@@ -923,6 +926,50 @@ TEST_F(PassingEvaluationTest,
 //    EXPECT_LE(pass_rating, 0.1);
 }
 
+TEST_F(PassingEvaluationTest,
+       ratepass_test_kick_from_friendly_corner)
+{
+    Pass pass_towards_friendly_side({-4.4, 2.9}, {-1.94795, -2.04509}, passing_config->getMaxPassSpeedMPerS()->value());
+//    Pass pass_towards_enemy_side({2, 2}, {2, -1.5}, passing_config->getMaxPassSpeedMPerS()->value() - 0.2);
+
+    World world = ::TestUtil::createBlankTestingWorld();
+    Team friendly_team(Duration::fromSeconds(10));
+    friendly_team.updateRobots({
+                                       Robot(1, {-4.5, 3.0}, {0, 0}, pass_towards_friendly_side.receiverOrientation(),
+                                             AngularVelocity::zero(), Timestamp::fromSeconds(0)),
+                                       Robot(2, {-4.5, 0.0}, {0, 0}, pass_towards_friendly_side.receiverOrientation(),
+                                             AngularVelocity::zero(), Timestamp::fromSeconds(0)),
+                                       Robot(3, {3, -1.5}, {0, 0}, pass_towards_friendly_side.receiverOrientation(),
+                                             AngularVelocity::zero(), Timestamp::fromSeconds(0)),
+                                       Robot(4, {-2, -1.7}, {0, 0}, pass_towards_friendly_side.receiverOrientation(),
+                                             AngularVelocity::zero(), Timestamp::fromSeconds(0)),
+//                                       Robot(1, {-4.5, 3.0}, {0, 0}, pass_towards_friendly_side.receiverOrientation(),
+//                                             AngularVelocity::zero(), Timestamp::fromSeconds(0)),
+//                                       Robot(1, {-4.5, 3.0}, {0, 0}, pass_towards_friendly_side.receiverOrientation(),
+//                                             AngularVelocity::zero(), Timestamp::fromSeconds(0)),
+                               });
+    world.updateFriendlyTeamState(friendly_team);
+    Team enemy_team(Duration::fromSeconds(10));
+    enemy_team.updateRobots({
+                                    Robot(0, {0, 0}, {0, 0}, Angle::zero(), AngularVelocity::zero(),
+                                          Timestamp::fromSeconds(0)),
+                                    Robot(1, {0, 2.5}, {0, 0}, Angle::zero(), AngularVelocity::zero(),
+                                          Timestamp::fromSeconds(0)),
+                                    Robot(2, {0, -2.5}, {0, 0}, Angle::zero(), AngularVelocity::zero(),
+                                          Timestamp::fromSeconds(0)),
+                                    Robot(3, {3.5, 1}, {0, 0}, Angle::zero(), AngularVelocity::zero(),
+                                          Timestamp::fromSeconds(0)),
+                                    Robot(4, {3.5, -1}, {0, 0}, Angle::zero(), AngularVelocity::zero(),
+                                          Timestamp::fromSeconds(0)),
+                            });
+    world.updateEnemyTeamState(enemy_team);
+
+    double pass_towards_friendly_side_rating = ratePass(world, pass_towards_friendly_side, *entire_field, passing_config);
+//    double pass_towards_enemy_side_rating = ratePass(world, pass_towards_enemy_side, *entire_field, passing_config);
+    EXPECT_GT(pass_towards_friendly_side_rating, 0.2);
+//    EXPECT_LT(pass_towards_friendly_side_rating, pass_towards_enemy_side_rating);
+//    EXPECT_LE(pass_rating, 0.1);
+}
 
 
 

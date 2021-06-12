@@ -52,6 +52,7 @@ TEST_F(FreeKickPlayTest, test_free_kick_play_on_enemy_half)
 
 TEST_F(FreeKickPlayTest, test_free_kick_play_on_friendly_half)
 {
+    enableVisualizer();
     BallState ball_state(Point(-1.5, -3), Vector(0, 0));
     auto friendly_robots = TestUtil::createStationaryRobotStatesWithId(
         {Point(-4.5, 0), Point(-3, 1.5), Point(-3, 0.5), Point(-3, -0.5), Point(-3, -1.5),
