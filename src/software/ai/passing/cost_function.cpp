@@ -26,6 +26,9 @@ double ratePass(const World& world, const Pass& pass, const Rectangle& zone,
     double shoot_pass_rating =
         ratePassShootScore(world.field(), world.enemyTeam(), pass, passing_config);
 
+    double receiver_dist_to_ball = (pass.receiverPoint() - world.ball().position()).length();
+    double near_ball_rating = sigmoid(receiver_dist_to_ball, passing_config->getReceiverPointToBallMinDist()->value(), 0.5);
+
 //    double in_region_quality = rectangleSigmoid(zone, pass.receiverPoint(), 0.2);
 
     // Place strict limits on the ball speed
@@ -42,7 +45,7 @@ double ratePass(const World& world, const Pass& pass, const Rectangle& zone,
 //            ) / 5.0;
 //    return weighted_average;
     return static_pass_quality * friendly_pass_rating * enemy_pass_rating *
-           shoot_pass_rating * pass_speed_quality;
+           shoot_pass_rating * pass_speed_quality *near_ball_rating;
 }
 
 // FUTURE TODO: DON'T USE DIFFERENT APPROXIMATIONS FOR CHERRY PICKING!!!!!!!
