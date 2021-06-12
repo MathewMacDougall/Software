@@ -5,6 +5,7 @@
 #include "software/ai/hl/stp/action/stop_action.h"
 #include "software/logger/logger.h"
 #include "software/world/ball.h"
+#include "software/math/math_functions.h"
 
 AttackerTactic::AttackerTactic(
     std::shared_ptr<const AttackerTacticConfig> attacker_tactic_config)
@@ -62,8 +63,7 @@ bool AttackerTactic::done() const
 }
 
 double AttackerTactic::calculateRobotCost(const Robot& robot, const World& world) const
-{
-    // Default 0 cost assuming ball is in dribbler
+{ // Default 0 cost assuming ball is in dribbler
     double cost = 0.0;
     if (!robot.isNearDribbler(world.ball().position()))
     {
@@ -72,8 +72,21 @@ double AttackerTactic::calculateRobotCost(const Robot& robot, const World& world
         // field have a cost less than 1
         cost = (robot.position() -
                 DribbleFSM::findInterceptionPoint(robot, world.ball(), world.field()))
-                   .length() /
+                       .length() /
                world.field().totalXLength();
+        // If there is already a robot assigned, we strongly prefer to keep that robot
+        // if it's roughly near the ball
+        if (robot_ && robot_->id() == robot.id())
+        {
+            const double dist_to_ball =
+                    (robot.position() - world.ball().position()).length();
+            // Cost is 0 at the ball, stays at zero near the ball, falls
+            // away quickly far away from ball
+            const double dist_to_ball_cost = sigmoid(dist_to_ball, 1.25, 0.5);
+            // If the intercept cost is higher, we use that instead
+            // TODO: better comment explaining why
+            cost = std::min(cost, dist_to_ball_cost);
+        }
     }
     return std::clamp<double>(cost, 0, 1);
 }
