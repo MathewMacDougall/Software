@@ -14,3 +14,8 @@ void ObstacleArtist::visit(const GeomObstacle<Polygon>& geom_obstacle)
 {
     drawPolygon(scene_, geom_obstacle.getGeom(), pen_);
 }
+
+void ObstacleArtist::visit(const CircleWithSliceRemoved &circle_with_slice_removed)
+{
+//    drawPolygon(scene_, geom_obstacle.getGeom(), pen_);
+}
