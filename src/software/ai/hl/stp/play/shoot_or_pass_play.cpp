@@ -82,14 +82,37 @@ void ShootOrPassPlay::getNextTactics(TacticCoroutine::push_type &yield,
         auto pass_eval    = pass_generator.generatePassEvaluation(world);
         auto best_pass_and_score_so_far = pass_eval.getBestPassOnField();
         auto ranked_zones = pass_eval.rankZonesForReceiving(world, world.ball().position());
-        for(size_t i = 0; i < ranked_zones.size(); i++) {
-            if (attacker->getAssignedRobot() && contains(pitch_division->getZone(ranked_zones[i]), attacker->getAssignedRobot()->position())) {
-                ranked_zones.erase(ranked_zones.begin()+i);
-                i--;
-                break;
+
+//        std::vector<EighteenZoneId> bad_zones = {EighteenZoneId::ZONE_10, EighteenZoneId::ZONE_11,EighteenZoneId::ZONE_12,EighteenZoneId::ZONE_13,EighteenZoneId::ZONE_14,EighteenZoneId::ZONE_15};
+//        for(size_t i = 1; i < ranked_zones.size(); i++) {
+//            if(std::find(bad_zones.begin(), bad_zones.end(), ranked_zones[i]) != bad_zones.end()) {
+//                ranked_zones.erase(ranked_zones.begin() + i);
+//                i--;
+//            }
+//        }
+
+        if (contains(world.field().fieldLines(), world.ball().position())){
+            for(size_t i = 0; i < ranked_zones.size(); i++) {
+                if (contains(pitch_division->getZone(ranked_zones[i]), world.ball().position())) {
+                    ranked_zones.erase(ranked_zones.begin()+i);
+                    i--;
+                    break;
+                }
             }
         }
+
+        if (contains(world.field().fieldLines(),attacker->getAssignedRobot()->position())) {
+            std::vector<EighteenZoneId> attacker_adjacent_zones = pitch_division->getAdjacentZoneIds(pitch_division->getZoneId(attacker->getAssignedRobot()->position()));
+            for(size_t i = 1; i < ranked_zones.size(); i++) {
+                if(std::find(attacker_adjacent_zones.begin(), attacker_adjacent_zones.end(), ranked_zones[i]) != attacker_adjacent_zones.end()) {
+                    ranked_zones.erase(ranked_zones.begin() + i);
+                    i--;
+                }
+            }
+        }
+
         Zones cherry_pick_region_1 = {ranked_zones[0]};
+
         std::vector<EighteenZoneId> adjacent_zones = pitch_division->getAdjacentZoneIds(ranked_zones[0]);
         for(size_t i = 1; i < ranked_zones.size(); i++) {
             if(std::find(adjacent_zones.begin(), adjacent_zones.end(), ranked_zones[i]) != adjacent_zones.end()) {
@@ -97,6 +120,7 @@ void ShootOrPassPlay::getNextTactics(TacticCoroutine::push_type &yield,
                 i--;
             }
         }
+
         Zones cherry_pick_region_2 = {ranked_zones[1]};
 
 
