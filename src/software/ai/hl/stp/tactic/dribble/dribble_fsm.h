@@ -223,7 +223,7 @@ struct DribbleFSM
         const auto have_possession = [](auto event) {
             auto ret =  event.common.robot.isNearDribbler(
                 event.common.world.ball().position());
-            std::cout << "Dribbler have possession = " << ret << std::endl;
+//            std::cout << "Dribbler have possession = " << ret << std::endl;
             return ret;
         };
 
@@ -237,7 +237,7 @@ struct DribbleFSM
          * direction and ahs possession of the ball
          */
         const auto dribbling_done = [have_possession](auto event) {
-            std::cout << "checking dribbling done" << std::endl;
+//            std::cout << "checking dribbling done" << std::endl;
             auto ret= comparePoints(event.common.world.ball().position(),
                                  getDribbleBallDestination(
                                      event.common.world.ball().position(),
@@ -251,7 +251,7 @@ struct DribbleFSM
                                  FINAL_ORIENTATION_CLOSE_THRESHOLD) &&
                    have_possession(event) &&
                    robotStopped(event.common.robot, ROBOT_DRIBBLING_DONE_SPEED);
-            std::cout << "Dribbler done dribblien = " << ret << std::endl;
+//            std::cout << "Dribbler done dribblien = " << ret << std::endl;
             return ret;
         };
 
@@ -264,7 +264,7 @@ struct DribbleFSM
          * @param event DribbleFSM::Update
          */
         const auto get_possession = [this](auto event) {
-            std::cout << "Dribble FSM = get_possession" << std::endl;
+//            std::cout << "Dribble FSM = get_possession" << std::endl;
             auto ball_position = event.common.world.ball().position();
             auto face_ball_orientation =
                 (ball_position - event.common.robot.position()).orientation();
@@ -287,7 +287,7 @@ struct DribbleFSM
          * @param event DribbleFSM::Update
          */
         const auto dribble = [this](auto event) {
-            std::cout << "Dribble FSM = dribble" << std::endl;
+//            std::cout << "Dribble FSM = dribble" << std::endl;
             Point ball_position = event.common.world.ball().position();
             auto [target_destination, target_orientation] =
                 calculateNextDribbleDestinationAndOrientation(

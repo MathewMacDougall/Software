@@ -65,16 +65,17 @@ void FreeKickPlay::getNextTactics(TacticCoroutine::push_type &yield, const World
         LOG(DEBUG) << "Took shot";
     }
     else {
-        Timestamp commit_stage_start_time = world.getMostRecentTimestamp();
-        Duration time_since_commit_stage_start =
-                world.getMostRecentTimestamp() - commit_stage_start_time;
-        do {
-
+//        Timestamp commit_stage_start_time = world.getMostRecentTimestamp();
+//        Duration time_since_commit_stage_start =
+//                world.getMostRecentTimestamp() - commit_stage_start_time;
+//        do {
+            std::cout << "attempting pass" << std::endl;
             performPassStage(yield, crease_defender_tactics, best_pass_and_score_so_far,
                              world);
-            time_since_commit_stage_start =
-                    world.getMostRecentTimestamp() - commit_stage_start_time;
-        }while(time_since_commit_stage_start < Duration::fromSeconds(1.0));
+//            time_since_commit_stage_start =
+//                    world.getMostRecentTimestamp() - commit_stage_start_time;
+//        }while(time_since_commit_stage_start < Duration::fromSeconds(1.0));
+        std::cout << "chip at goal" << std::endl;
         chipAtGoalStage(yield, crease_defender_tactics, world);
     }
 
@@ -123,8 +124,14 @@ void FreeKickPlay::chipAtGoalStage(
     Point chip_target =
         world.field().enemyGoalCenter() - Vector(fallback_chip_target_x_offset, 0);
 
+    auto open_areas =  findGoodChipTargets(world);
+    if(!open_areas.empty()) {
+        chip_target = open_areas[0].origin();
+    }
+
     do
     {
+        std::cout << "chippping at goal" << std::endl;
         chip_tactic->updateControlParams(world.ball().position(), chip_target);
         std::get<0>(crease_defender_tactics)
             ->updateControlParams(world.ball().position(), CreaseDefenderAlignment::LEFT);
@@ -155,19 +162,42 @@ void FreeKickPlay::performPassStage(
     auto receiver =
         std::make_shared<ReceiverTactic>(world.field(), world.friendlyTeam(),
                                          world.enemyTeam(), pass, world.ball(), false);
-    do
+    Timestamp commit_stage_start_time = world.getMostRecentTimestamp();
+    Duration time_since_commit_stage_start =
+            world.getMostRecentTimestamp() - commit_stage_start_time;
+    while (ratePass(world, pass, world.field().fieldLines(), play_config->getPassingConfig()) > 0.01 && !attacker->done() && time_since_commit_stage_start < Duration::fromSeconds(1.0))
     {
+        std::cout << "pass stage 1" << std::endl;
         attacker->updateControlParams(pass);
         receiver->updateControlParams(pass);
 
         std::get<0>(crease_defender_tactics)
-            ->updateControlParams(world.ball().position(), CreaseDefenderAlignment::LEFT);
+                ->updateControlParams(world.ball().position(), CreaseDefenderAlignment::LEFT);
         std::get<1>(crease_defender_tactics)
-            ->updateControlParams(world.ball().position(),
-                                  CreaseDefenderAlignment::RIGHT);
+                ->updateControlParams(world.ball().position(),
+                                      CreaseDefenderAlignment::RIGHT);
         yield({{attacker, receiver, std::get<0>(crease_defender_tactics),
-                std::get<1>(crease_defender_tactics)}});
-    } while (!receiver->done());
+                       std::get<1>(crease_defender_tactics)}});
+        time_since_commit_stage_start =
+                world.getMostRecentTimestamp() - commit_stage_start_time;
+    }
+
+    if(attacker->done()) {
+        do
+        {
+            std::cout << "pass stage 2" << std::endl;
+            attacker->updateControlParams(pass);
+            receiver->updateControlParams(pass);
+
+            std::get<0>(crease_defender_tactics)
+                    ->updateControlParams(world.ball().position(), CreaseDefenderAlignment::LEFT);
+            std::get<1>(crease_defender_tactics)
+                    ->updateControlParams(world.ball().position(),
+                                          CreaseDefenderAlignment::RIGHT);
+            yield({{attacker, receiver, std::get<0>(crease_defender_tactics),
+                           std::get<1>(crease_defender_tactics)}});
+        } while (!receiver->done());
+    }
 }
 
 PassWithRating FreeKickPlay::shootOrFindPassStage(
@@ -200,12 +230,12 @@ PassWithRating FreeKickPlay::shootOrFindPassStage(
     auto align_to_ball_tactic = std::make_shared<MoveTactic>(false);
 
     // Wait for a robot to be assigned to aligned to the ball to pass
-    while (!align_to_ball_tactic->getAssignedRobot())
-    {
-        LOG(DEBUG) << "Nothing assigned to align to ball yet";
+//    while (!align_to_ball_tactic->getAssignedRobot())
+//    {
+        LOG(WARNING) << "Nothing assigned to align to ball yet";
         updateAlignToBallTactic(align_to_ball_tactic, world);
 
-        auto pass_eval = pass_generator.generatePassEvaluation(world);
+//        auto pass_eval = pass_generator.generatePassEvaluation(world);
         auto pass1     = pass_eval.getBestPassInZones(cherry_pick_region_1).pass;
         auto pass2     = pass_eval.getBestPassInZones(cherry_pick_region_2).pass;
 
@@ -222,20 +252,22 @@ PassWithRating FreeKickPlay::shootOrFindPassStage(
             ->updateControlParams(world.ball().position(),
                                   CreaseDefenderAlignment::RIGHT);
 
-        yield({{align_to_ball_tactic, cherry_pick_tactic_1, cherry_pick_tactic_2,
-                std::get<0>(crease_defender_tactics),
-                std::get<1>(crease_defender_tactics)}});
-    }
+//        yield({{align_to_ball_tactic}, {cherry_pick_tactic_1, cherry_pick_tactic_2,
+//                std::get<0>(crease_defender_tactics),
+//                std::get<1>(crease_defender_tactics)}});
+        yield({{align_to_ball_tactic}});
+//    }
 
 
     // Set the passer on the pass generator
-    LOG(DEBUG) << "Aligning with robot " << align_to_ball_tactic->getAssignedRobot()->id()
+    LOG(WARNING) << "Aligning with robot " << align_to_ball_tactic->getAssignedRobot()->id()
                << "as the passer";
 
     // Put the robot in roughly the right position to perform the kick
-    LOG(DEBUG) << "Aligning to ball";
+    LOG(WARNING) << "Aligning to ball";
     do
     {
+        LOG(WARNING) << "Aligning to ball";
         updateAlignToBallTactic(align_to_ball_tactic, world);
 
         auto pass_eval = pass_generator.generatePassEvaluation(world);
@@ -271,6 +303,7 @@ PassWithRating FreeKickPlay::shootOrFindPassStage(
     Timestamp commit_stage_start_time = world.getMostRecentTimestamp();
     do
     {
+        std::cout << "ramping down pass search" << std::endl;
         updateAlignToBallTactic(align_to_ball_tactic, world);
 
         auto pass_eval = pass_generator.generatePassEvaluation(world);
