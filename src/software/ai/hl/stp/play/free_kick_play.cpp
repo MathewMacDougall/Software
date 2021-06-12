@@ -14,7 +14,7 @@
 #include "software/world/ball.h"
 
 FreeKickPlay::FreeKickPlay(std::shared_ptr<const PlayConfig> config)
-    : Play(config, true), MAX_TIME_TO_COMMIT_TO_PASS(Duration::fromSeconds(3))
+    : Play(config, true), MAX_TIME_TO_COMMIT_TO_PASS(Duration::fromSeconds(1.5))
 {
 }
 
@@ -64,19 +64,35 @@ void FreeKickPlay::getNextTactics(TacticCoroutine::push_type &yield, const World
     {
         LOG(DEBUG) << "Took shot";
     }
-    else if (best_pass_and_score_so_far.rating > MIN_ACCEPTABLE_PASS_SCORE)
-    {
-        performPassStage(yield, crease_defender_tactics, best_pass_and_score_so_far,
-                         world);
-    }
-    else
-    {
-        LOG(DEBUG) << "Pass had score of " << best_pass_and_score_so_far.rating
-                   << " which is below our threshold of" << MIN_ACCEPTABLE_PASS_SCORE
-                   << ", so chipping at enemy net";
+    else {
+        Timestamp commit_stage_start_time = world.getMostRecentTimestamp();
+        Duration time_since_commit_stage_start =
+                world.getMostRecentTimestamp() - commit_stage_start_time;
+        do {
 
+            performPassStage(yield, crease_defender_tactics, best_pass_and_score_so_far,
+                             world);
+            time_since_commit_stage_start =
+                    world.getMostRecentTimestamp() - commit_stage_start_time;
+        }while(time_since_commit_stage_start < Duration::fromSeconds(1.0));
         chipAtGoalStage(yield, crease_defender_tactics, world);
     }
+
+
+//
+//    else if (best_pass_and_score_so_far.rating > MIN_ACCEPTABLE_PASS_SCORE)
+//    {
+//        performPassStage(yield, crease_defender_tactics, best_pass_and_score_so_far,
+//                         world);
+//    }
+//    else
+//    {
+//        LOG(WARNING) << "Pass had score of " << best_pass_and_score_so_far.rating
+//                   << " which is below our threshold of" << MIN_ACCEPTABLE_PASS_SCORE
+//                   << ", so chipping at enemy net";
+//
+//        chipAtGoalStage(yield, crease_defender_tactics, world);
+//    }
 
 
     LOG(DEBUG) << "Finished";
@@ -103,7 +119,7 @@ void FreeKickPlay::chipAtGoalStage(
 
     // Figure out where the fallback chip target is
     // This is exerimentally determined to be a reasonable value
-    double fallback_chip_target_x_offset = 1.5;
+    double fallback_chip_target_x_offset = 2.5;
     Point chip_target =
         world.field().enemyGoalCenter() - Vector(fallback_chip_target_x_offset, 0);
 
