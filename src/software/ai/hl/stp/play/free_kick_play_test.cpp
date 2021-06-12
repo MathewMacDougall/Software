@@ -84,3 +84,63 @@ TEST_F(FreeKickPlayTest, test_free_kick_play_on_friendly_half)
             terminating_validation_functions, non_terminating_validation_functions,
             Duration::fromSeconds(10));
 }
+
+
+
+TEST_F(FreeKickPlayTest, test_free_kick_play_totally_blocked)
+{
+    enableVisualizer();
+    BallState ball_state(Point(-1.5, -3), Vector(0, 0));
+    auto friendly_robots = TestUtil::createStationaryRobotStatesWithId(
+            {Point(-4.5, 0), Point(-3, 1.5), Point(-3, 0.5), Point(-3, -0.5), Point(-3, -1.5),
+             Point(4.6, -3.1)});
+    setFriendlyGoalie(0);
+    auto enemy_robots = TestUtil::createStationaryRobotStatesWithId(
+            {
+                Point(-1.5, -2.5),
+                Point(-1.5 + 0.18*1, -2.5),
+                Point(-1.5 + 0.18*2, -2.5),
+                Point(-1.5 + 0.18*3, -2.5),
+                Point(-1.5 + 0.18*3, -2.5-0.18*1),
+                Point(-1.5 + 0.18*3, -2.5-0.18*2),
+                Point(-1.5 + 0.18*3, -2.5-0.18*3),
+                Point(-1.5 + 0.18*3, -2.5-0.18*4),
+//                Point(-1.5 + 0.18*3, -2.5),
+//                Point(-1.5 + 0.18*3, -2.5),
+//                Point(-1.5 + 0.18*3, -2.5),
+//                Point(-1.5 + 0.18*3, -2.5),
+//                Point(-1.5, -2.5),
+//                Point(-1.5, -2.5),
+//                Point(-1.3, -2.5),
+//                Point(-1.1, -2.6),
+//                Point(-0.8, -2.75),
+//                Point(-0.8, -2.9),
+//                Point(-1.1, -2.6),
+//                Point(-1.1, -2.6),
+//                Point(1, -2.5),
+                field.enemyGoalCenter(),
+//             field.enemyDefenseArea().negXNegYCorner(),
+//             field.enemyDefenseArea().negXPosYCorner()
+            });
+    setEnemyGoalie(0);
+    setAIPlay(TYPENAME(FreeKickPlay));
+    setRefereeCommand(RefereeCommand::NORMAL_START, RefereeCommand::INDIRECT_FREE_US);
+
+    std::vector<ValidationFunction> terminating_validation_functions = {
+            // This will keep the test running for 9.5 seconds to give everything enough
+            // time to settle into position and be observed with the Visualizer
+            // TODO: Implement proper validation
+            // https://github.com/UBC-Thunderbots/Software/issues/1971
+            [](std::shared_ptr<World> world_ptr, ValidationCoroutine::push_type& yield) {
+                while (world_ptr->getMostRecentTimestamp() < Timestamp::fromSeconds(9.5))
+                {
+                    yield("Timestamp not at 9.5s");
+                }
+            }};
+
+    std::vector<ValidationFunction> non_terminating_validation_functions = {};
+
+    runTest(field, ball_state, friendly_robots, enemy_robots,
+            terminating_validation_functions, non_terminating_validation_functions,
+            Duration::fromSeconds(10));
+}

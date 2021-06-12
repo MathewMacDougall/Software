@@ -65,16 +65,17 @@ void FreeKickPlay::getNextTactics(TacticCoroutine::push_type &yield, const World
         LOG(DEBUG) << "Took shot";
     }
     else {
-        Timestamp commit_stage_start_time = world.getMostRecentTimestamp();
-        Duration time_since_commit_stage_start =
-                world.getMostRecentTimestamp() - commit_stage_start_time;
-        do {
-
+//        Timestamp commit_stage_start_time = world.getMostRecentTimestamp();
+//        Duration time_since_commit_stage_start =
+//                world.getMostRecentTimestamp() - commit_stage_start_time;
+//        do {
+            std::cout << "attempting pass" << std::endl;
             performPassStage(yield, crease_defender_tactics, best_pass_and_score_so_far,
                              world);
-            time_since_commit_stage_start =
-                    world.getMostRecentTimestamp() - commit_stage_start_time;
-        }while(time_since_commit_stage_start < Duration::fromSeconds(1.0));
+//            time_since_commit_stage_start =
+//                    world.getMostRecentTimestamp() - commit_stage_start_time;
+//        }while(time_since_commit_stage_start < Duration::fromSeconds(1.0));
+        std::cout << "chip at goal" << std::endl;
         chipAtGoalStage(yield, crease_defender_tactics, world);
     }
 
@@ -123,6 +124,11 @@ void FreeKickPlay::chipAtGoalStage(
     Point chip_target =
         world.field().enemyGoalCenter() - Vector(fallback_chip_target_x_offset, 0);
 
+    auto open_areas =  findGoodChipTargets(world);
+    if(!open_areas.empty()) {
+        chip_target = open_areas[0].origin();
+    }
+
     do
     {
         chip_tactic->updateControlParams(world.ball().position(), chip_target);
@@ -155,19 +161,40 @@ void FreeKickPlay::performPassStage(
     auto receiver =
         std::make_shared<ReceiverTactic>(world.field(), world.friendlyTeam(),
                                          world.enemyTeam(), pass, world.ball(), false);
-    do
+    Timestamp commit_stage_start_time = world.getMostRecentTimestamp();
+    Duration time_since_commit_stage_start =
+            world.getMostRecentTimestamp() - commit_stage_start_time;
+    while (ratePass(world, pass, world.field().fieldLines(), play_config->getPassingConfig()) > 0.01 && !attacker->done() && time_since_commit_stage_start < Duration::fromSeconds(1.0))
     {
         attacker->updateControlParams(pass);
         receiver->updateControlParams(pass);
 
         std::get<0>(crease_defender_tactics)
-            ->updateControlParams(world.ball().position(), CreaseDefenderAlignment::LEFT);
+                ->updateControlParams(world.ball().position(), CreaseDefenderAlignment::LEFT);
         std::get<1>(crease_defender_tactics)
-            ->updateControlParams(world.ball().position(),
-                                  CreaseDefenderAlignment::RIGHT);
+                ->updateControlParams(world.ball().position(),
+                                      CreaseDefenderAlignment::RIGHT);
         yield({{attacker, receiver, std::get<0>(crease_defender_tactics),
-                std::get<1>(crease_defender_tactics)}});
-    } while (!receiver->done());
+                       std::get<1>(crease_defender_tactics)}});
+        time_since_commit_stage_start =
+                world.getMostRecentTimestamp() - commit_stage_start_time;
+    }
+
+    if(attacker->done()) {
+        do
+        {
+            attacker->updateControlParams(pass);
+            receiver->updateControlParams(pass);
+
+            std::get<0>(crease_defender_tactics)
+                    ->updateControlParams(world.ball().position(), CreaseDefenderAlignment::LEFT);
+            std::get<1>(crease_defender_tactics)
+                    ->updateControlParams(world.ball().position(),
+                                          CreaseDefenderAlignment::RIGHT);
+            yield({{attacker, receiver, std::get<0>(crease_defender_tactics),
+                           std::get<1>(crease_defender_tactics)}});
+        } while (!receiver->done());
+    }
 }
 
 PassWithRating FreeKickPlay::shootOrFindPassStage(

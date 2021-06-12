@@ -127,7 +127,7 @@ struct AttackerFSM
                                    back::process<PivotKickFSM::Update> processEvent) {
                 // shoot on net
             _current_state = AttackerFSMStates::PASSING;
-            std::cout << "in shoot" << std::endl;
+//            std::cout << "in shoot" << std::endl;
             auto ball_position = event.common.world.ball().position();
                 PivotKickFSM::ControlParams control_params{
                         .kick_origin = ball_position,
@@ -143,7 +143,7 @@ struct AttackerFSM
         const auto pass = [&](auto event,
                                    back::process<PivotKickFSM::Update> processEvent) {
             _current_state = AttackerFSMStates::PASSING;
-            std::cout << "in pass" << std::endl;
+//            std::cout << "in pass" << std::endl;
                 PivotKickFSM::ControlParams control_params{
                         .kick_origin    = event.control_params.pass->passerPoint(),
                         .kick_direction = event.control_params.pass->passerOrientation(),
@@ -163,7 +163,7 @@ struct AttackerFSM
                                   back::process<DribbleFSM::Update> processEvent) {
 //            _current_state = AttackerFSMStates::KEEP_AWAY;
 //            std::cout << "in keep away" << std::endl;
-//            // TODO (#2073): Implement a more effective keep away tactic
+            // TODO (#2073): Implement a more effective keep away tactic
 //            DribbleFSM::ControlParams control_params{
 //                .dribble_destination       = std::nullopt,
 //                .final_dribble_orientation = std::nullopt,
@@ -235,13 +235,13 @@ struct AttackerFSM
 
         const auto has_shot = [](auto event) {
             auto ret =  event.control_params.shot.has_value();
-            std::cout << "has shot: " << ret << std::endl;
+//            std::cout << "has shot: " << ret << std::endl;
             return ret;
         };
 
         const auto has_pass = [](auto event) {
             auto ret =  event.control_params.pass.has_value();
-            std::cout << "has pass: " << ret << std::endl;
+//            std::cout << "has pass: " << ret << std::endl;
             return ret;
         };
 
