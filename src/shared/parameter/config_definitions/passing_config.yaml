@@ -80,6 +80,12 @@
      max: 2.0
      value: -0.2
      description: "TODO"
+ - double:
+     name: receiver_point_to_ball_min_dist
+     min: 0
+     max: 3.0
+     value: 1.5
+     description: "TODO"
 
 # - int:
 #     name: ball_deceleration_m_s
